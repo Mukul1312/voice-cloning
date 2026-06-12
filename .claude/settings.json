@@ -56,7 +56,27 @@
       "WebFetch(domain:colab.research.google.com)",
       "WebFetch(domain:groups.google.com)",
       "WebFetch(domain:docs.pytorch.org)",
-      "WebFetch(domain:huggingface.co)"
+      "WebFetch(domain:huggingface.co)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:docs.nvidia.com)",
+      "WebFetch(domain:www.emergentmind.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NVIDIA/NeMo/main/tools/nemo_forced_aligner/utils/make_ctm_files.py\")",
+      "WebFetch(domain:www.isca-archive.org)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NVIDIA/NeMo/main/nemo/collections/asr/parts/utils/manifest_utils.py\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NVIDIA/NeMo/main/tools/nemo_forced_aligner/utils/make_ass_files.py\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/NVIDIA/NeMo/main/tools/nemo_forced_aligner/README.md\")",
+      "WebFetch(domain:www.mdpi.com)",
+      "WebFetch(domain:www.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:speechbrain.readthedocs.io)",
+      "WebFetch(domain:www.pyannote.ai)",
+      "Bash(.venv/Scripts/python.exe -c \"import indic_transliteration; print\\('installed', indic_transliteration.__version__\\)\")",
+      "Bash(.venv/Scripts/python.exe -m pip install indic-transliteration)",
+      "Bash(.venv/Scripts/python.exe -c ' *)",
+      "Bash(.venv/Scripts/python.exe scripts/classify_transliterate.py i-and-mine-and-namabhasa-stage)",
+      "Bash(.venv/Scripts/python.exe scripts/align_cut.py i-and-mine-and-namabhasa-stage)",
+      "Bash(.venv/Scripts/python.exe scripts/qa.py i-and-mine-and-namabhasa-stage --min-wps 0.65)",
+      "Bash(.venv/Scripts/python.exe -m pip uninstall -y indic-transliteration)"
     ]
   },
   "enabledPlugins": {

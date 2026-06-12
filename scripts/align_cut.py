@@ -1,20 +1,18 @@
 """
-align_cut.py - Step 2b: word-level forced alignment -> excise Sanskrit verse runs
--> cut COHERENT English clips + manifest.
+align_cut.py - Step 2b: word-level forced alignment -> cut COHERENT clips + manifest.
 
-A clip is now a complete idea: it ENDS AT A SENTENCE BOUNDARY (.?!) and groups
-~2-3 sentences (~min..max seconds), so it makes sense on its own. Sprinkled
-Sanskrit terms stay (his English voice); contiguous Sanskrit runs (verses) are
-excised. Each clip gets a small lead-in pad so the first word's onset isn't clipped.
+A clip is a complete idea: it ENDS AT A SENTENCE BOUNDARY (.?!) and groups ~2-3
+sentences (~min..max seconds), so it makes sense on its own. We KEEP everything GGS
+says — including his recited Sanskrit verses, which are his real voice (he speaks,
+doesn't chant them; verified). No verse excision. Each clip gets a small lead-in pad
+so the first word's onset isn't clipped.
 
 Pipeline (per lecture in data/lectures/<slug>/):
   1. audio.mp3 -> audio.wav (16k mono)
   2. transcript.txt -> transliterate IAST->ASCII                         [D4]
   3. stable-ts: align ASCII text to audio -> per-WORD timestamps (cached -> words.json)
-  4. flag each word Sanskrit/English (validated dict detector)           [D3]
-  5. excise contiguous Sanskrit runs (>= --excise-run); keep sprinkled terms
-  6. group kept words into sentence-boundary clips (~--min-sec..--max-sec)
-  7. pad lead-in, cut WAVs (16k mono, trailing silence trimmed) + train.jsonl
+  4. group words into sentence-boundary clips (~--min-sec..--max-sec),
+     pad lead-in, cut WAVs (16k mono, trailing silence trimmed) + train.jsonl
 
 SETUP:
   pip install stable-ts                   # pure-Python + torch alignment (NO C++ compiler needed)
@@ -26,7 +24,7 @@ import argparse, json, subprocess, sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import classify_transliterate as ct          # transliterate(), is_sanskrit(), load_english()
+import classify_transliterate as ct          # transliterate()
 
 ROOT = Path(__file__).resolve().parent.parent
 LECT = ROOT / "data" / "lectures"
@@ -34,7 +32,6 @@ LECT = ROOT / "data" / "lectures"
 MIN_SEC_DEFAULT = 9.0       # don't end a clip before this -> groups sentences into one idea
 MAX_SEC_DEFAULT = 20.0      # force an end by here
 HARD_MIN, HARD_MAX = 4.0, 30.0
-EXCISE_RUN_DEFAULT = 3      # contiguous Sanskrit words >= this = verse/quote -> excise
 LEAD_PAD = 0.15            # secs of lead-in so the first word's onset isn't clipped
 TAIL_PAD = 0.15            # secs after the last word (before trailing-silence trim)
 
@@ -42,7 +39,7 @@ TAIL_PAD = 0.15            # secs after the last word (before trailing-silence t
 def to_wav(mp3: Path) -> Path:
     wav = mp3.with_suffix(".wav")
     if not wav.exists():
-        print("[1/5] mp3 -> 16k mono wav ...")
+        print("[1/4] mp3 -> 16k mono wav ...")
         subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(mp3),
                         "-ac", "1", "-ar", "16000", str(wav)], check=True)
     return wav
@@ -51,7 +48,7 @@ def to_wav(mp3: Path) -> Path:
 def align(wav: Path, text: str, model_size: str):
     """stable-ts forced alignment of the GIVEN text -> list of {'start','end','text'} per word."""
     import stable_whisper
-    print(f"[3/5] Aligning with stable-ts '{model_size}' on CPU "
+    print(f"[3/4] Aligning with stable-ts '{model_size}' on CPU "
           f"(a 30-min lecture takes several minutes; cached after)...")
     model = stable_whisper.load_model(model_size)
     result = model.align(str(wav), text, language="en")
@@ -59,29 +56,10 @@ def align(wav: Path, text: str, model_size: str):
             for w in result.all_words() if w.word.strip()]
 
 
-def excise_zones(words, eng, excise_run):
-    """Mark words inside a contiguous Sanskrit run of length >= excise_run."""
-    flags = [ct.is_sanskrit(w["text"], eng) for w in words]
-    drop = [False] * len(words)
-    i = 0
-    while i < len(words):
-        if flags[i]:
-            j = i
-            while j < len(words) and flags[j]:
-                j += 1
-            if j - i >= excise_run:
-                for k in range(i, j):
-                    drop[k] = True
-            i = j
-        else:
-            i += 1
-    return drop
-
-
-def build_clips(words, drop, min_sec, max_sec):
-    """Group non-excised words into clips that END AT A SENTENCE BOUNDARY (.?!),
-    each ~min_sec..max_sec long (a coherent 2-3 sentence idea). Break at excised
-    (verse) runs. Returns list of (start_idx, end_idx) into `words`."""
+def build_clips(words, min_sec, max_sec):
+    """Group words into clips that END AT A SENTENCE BOUNDARY (.?!), each
+    ~min_sec..max_sec long (a coherent 2-3 sentence idea). Returns list of
+    (start_idx, end_idx) into `words`."""
     clips, cur = [], []
 
     def flush():
@@ -92,8 +70,6 @@ def build_clips(words, drop, min_sec, max_sec):
         cur.clear()
 
     for idx, w in enumerate(words):
-        if drop[idx]:
-            flush(); continue
         cur.append(idx)
         dur = words[cur[-1]]["end"] - words[cur[0]]["start"]
         ends_sentence = w["text"].rstrip().endswith((".", "?", "!"))
@@ -117,7 +93,6 @@ def main():
     ap.add_argument("slug", nargs="?", default="i-and-mine-and-namabhasa-stage")
     ap.add_argument("--max-clips", type=int, default=0, help="0 = all")
     ap.add_argument("--model", default="tiny", help="stable-ts whisper model: tiny/base/small")
-    ap.add_argument("--excise-run", type=int, default=EXCISE_RUN_DEFAULT)
     ap.add_argument("--min-sec", type=float, default=MIN_SEC_DEFAULT)
     ap.add_argument("--max-sec", type=float, default=MAX_SEC_DEFAULT)
     ap.add_argument("--realign", action="store_true", help="redo alignment (ignore cache)")
@@ -131,24 +106,19 @@ def main():
         sys.exit(f"Not found: {mp3} (run fetch_lecture.py first)")
 
     wav = to_wav(mp3)
-    print("[2/5] Transliterating transcript IAST -> ASCII ...")
+    print("[2/4] Transliterating transcript IAST -> ASCII ...")
     text = ct.transliterate((d / "transcript.txt").read_text(encoding="utf-8"))
 
     cache = d / "words.json"
     if cache.exists() and not args.realign:
         words = json.loads(cache.read_text(encoding="utf-8"))
-        print(f"[3/5] Loaded cached alignment: {len(words)} words (--realign to redo).")
+        print(f"[3/4] Loaded cached alignment: {len(words)} words (--realign to redo).")
     else:
         words = align(wav, text, args.model)
         cache.write_text(json.dumps(words), encoding="utf-8")
         print(f"      aligned {len(words)} words (cached -> words.json)")
 
-    print(f"[4/5] Flagging Sanskrit + excising runs >= {args.excise_run} ...")
-    eng = ct.load_english()
-    drop = excise_zones(words, eng, args.excise_run)
-    print(f"      excised {sum(drop)} / {len(words)} words as verse/quote runs")
-
-    clips = build_clips(words, drop, args.min_sec, args.max_sec)
+    clips = build_clips(words, args.min_sec, args.max_sec)
     if args.max_clips:
         clips = clips[: args.max_clips]
 
@@ -156,7 +126,7 @@ def main():
     for old in clips_dir.glob("*.wav"):           # clear stale clips from prior runs
         old.unlink()
     manifest = d / "train.jsonl"
-    print(f"[5/5] Cutting {len(clips)} coherent English clips -> {manifest.name} ...")
+    print(f"[4/4] Cutting {len(clips)} coherent clips -> {manifest.name} ...")
     durs = []
     with manifest.open("w", encoding="utf-8") as mf:
         for i, (s, e) in enumerate(clips, 1):
