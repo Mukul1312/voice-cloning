@@ -1,0 +1,21 @@
+# Local DATA-PREP environment for the GGS voice-cloning pipeline.
+# (VoxCPM2 LoRA *training* runs on Colab/GPU, NOT here — don't install the training stack locally.)
+#
+# Setup (PowerShell, from the project root):
+#   python -m venv .venv
+#   .venv\Scripts\Activate.ps1        # if blocked: Set-ExecutionPolicy -Scope Process -Bypass -Force
+#   pip install -r requirements.txt
+#   # after installing, freeze exact versions for reproducibility:
+#   pip freeze > requirements.lock.txt
+#
+# System prerequisite (NOT pip): ffmpeg  ->  winget install Gyan.FFmpeg
+
+stable-ts                 # whisper-based forced alignment of a GIVEN transcript -> word timestamps
+                          #   pure-Python + prebuilt torch wheel (NO C++ compiler needed on Windows)
+
+# Notes:
+# - We tried ctc-forced-aligner first, but its native C++ extension needs MSVC Build Tools
+#   (~6 GB) to compile on Windows. stable-ts does the same job with no compiler.
+# - fetch_lecture.py + classify_transliterate.py are STDLIB-ONLY (no deps needed).
+# - HIGHER-ACCURACY ALIGNMENT (later, if needed): run ctc-forced-aligner (pip) or MFA (conda)
+#   on Colab/Linux, where the native build / prebuilt wheels just work — and it's GPU-fast.

@@ -1,0 +1,272 @@
+[DROP] f=0.38 r=4 verse(run>=4+cited) | So, this is the conclusion, siddhānta, last instruction, ataeva māyā-moha chāḍi' buddhimān [Song: Durlabha mānava-janma labhiyā saḿsāre, Bhaktivinoda Ṭhākura, Kalyāna Kalpataru].
+[KEEP] f=0.09 r=1 english    | One who is intelligent, really intelligent, should give up this maya-moha.
+[KEEP] f=0.36 r=4 english    | nitya-tattva krishna-bhakti koruna sandhan, sadhya vastu krishna-prema - krishna-bhakti, paramartha - for which this life is meant, he should inquire about it.
+[KEEP] f=0.08 r=1 english    | He should take all such care; how can I develop this krishna-bhakti?
+[KEEP] f=0.14 r=1 english    | This maya-moha, what is this moha, delusion?
+[KEEP] f=0.00 r=0 english    | It says in English - delusion, illusion-delusion, illusion, both illusion and delusion.
+[DROP] f=0.44 r=11 verse(run>=4+cited) | In the fifth canto of Śrīmad Bhāgavatam, it is stated and Bhagavad-gītā also states, moha, attachment towards this so-called relationship: puṁsaḥ striyā mithunī-bhāvam etaṁ tayor mitho hṛdaya-granthim āhuḥ ato gṛha-kṣetra-sutāpta-vittair janasya moho ’yam ahaṁ mameti [Śrīmad Bhāgavatam 5.5.8].
+[KEEP] f=0.27 r=2 english    | It is said, janasya moho yam aham mameti, I and mine.
+[KEEP] f=0.00 r=0 english    | What is the base of this material world?
+[KEEP] f=0.44 r=5 english    | pumsah striya mithuni-bhavam etam, Bhagavata says, this is Lord Rishabhadevas instruction in the fifth canto of Shrimad Bhagavatam.
+[KEEP] f=0.33 r=4 english    | This is the base of the material world, pumsah striya mithuni-bhavam etam.
+[KEEP] f=0.20 r=1 english    | This is based on the maithuna of purusha and stri.
+[KEEP] f=0.00 r=0 english    | Male and female union - maithuna, sexual enjoyment, sexual union.
+[KEEP] f=0.00 r=0 english    | This material world is based on it.
+[KEEP] f=0.00 r=0 english    | This is the base of the material world, nothing else.
+[DROP] f=0.27 r=8 run>=7     | puṁsaḥ striyā mithunī-bhāvam etaṁ tayor mitho hṛdaya-granthim āhuḥ, and [when] they unite, a very hard knot, granthi means knot, a very, very hard, very strong knot is there in the heart.
+[KEEP] f=0.00 r=0 english    | It is very difficult to break.
+[DROP] f=0.50 r=4 frac>=0.5  | This durja- grha-khalo yadustajya svajanam arca patham ca hitvā [?] These are all statements of Śrīmad Bhāgavatam.
+[KEEP] f=0.04 r=1 english    | It is very difficult to give it up, dustyaja, means give it up, very difficult to give it up - this attachment, false attachment.
+[KEEP] f=0.06 r=1 english    | Real attachment towards Krishna, but we are so much attached to these false things - temporary things.
+[KEEP] f=0.09 r=1 english    | Bhaktivinoda describes in his song - it is very difficult - ya dustyaja - it is very difficult to give it up .
+[KEEP] f=0.00 r=0 english    | This bondage, this attachment for family tie, the tie, bondage of this husband and wife, bondage, union - so strong - hard knot to break.
+[DROP] f=0.72 r=11 frac>=0.5  | It is stated, puṁsaḥ striyā mithunī-bhāvam etaṁ tayor mitho hṛdaya-granthim āhuḥ ato gṛha-kṣetra-sutāpta-vittair janasya moho ’yam ahaṁ mameti.
+[KEEP] f=0.05 r=1 english    | When male and female, related as husband and wife, united, the first thing required is griha, a house is required, isnt it?
+[KEEP] f=0.00 r=0 english    | You have not yet got a house, [?
+[KEEP] f=0.20 r=1 english    | laughter] griha is required first.
+[KEEP] f=0.00 r=0 english    | You may be, when you were alone, staying anywhere.
+[KEEP] f=0.00 r=0 english    | Sleeping on someone's veranda.
+[KEEP] f=0.00 r=0 english    | With a wife, a house is required.
+[KEEP] f=0.14 r=1 english    | First requirement, now it expands - griha.
+[KEEP] f=0.27 r=3 english    | ato griha, then comes kshetra - some land and property for maintenance is required - ato griha, kshetra - then suta, children are born - progeny.
+[KEEP] f=0.00 r=0 english    | And the wife always desires to have children.
+[KEEP] f=0.00 r=0 english    | If the wife is devoid of children, that is misery for her.
+[KEEP] f=0.00 r=0 english    | “Oh, I married this man, no children are coming out.
+[KEEP] f=0.00 r=0 english    | You see.
+[KEEP] f=0.00 r=0 english    | These are all these desires.
+[KEEP] f=0.00 r=0 english    | Wifes desire.
+[DROP] f=1.00 r=4 frac>=0.5  | ato gṛha, kṣetra, suta.
+[KEEP] f=0.30 r=1 english    | Then apta, then vittaih - apta means these so-called relatives.
+[KEEP] f=0.31 r=2 english    | Stri, the Sanskrit word stri, you follow, the Sanskrit word stri, bharya, wife, it says stri.
+[KEEP] f=0.06 r=1 english    | The Sanskrit root stri means that which expands; it is the literary meaning - that which expands.
+[DROP] f=0.50 r=1 frac>=0.5  | Strī expands.
+[KEEP] f=0.33 r=1 english    | Stri means expand.
+[KEEP] f=0.00 r=0 english    | You are one, you become two.
+[KEEP] f=0.00 r=0 english    | Then children came out - three, four, five.
+[KEEP] f=0.00 r=0 english    | Then son-in-law, father-in-law, daughter-in-law, so many expansions going on, going on, going on, going on.
+[KEEP] f=0.00 r=0 english    | Isnt it?
+[KEEP] f=0.25 r=1 english    | The wife expands, stri.
+[KEEP] f=0.42 r=6 english    | ato griha, kshetra, suta, apta, apta means - so-called friends, relatives, expansions, vittaih; vittaih means material wealth, material property.
+[KEEP] f=0.45 r=4 english    | ato griha-kshetra-sutapta-vittair janasya moho yam aham mameti, says this is all mine - aham mameti, aham mameti, I and mine.
+[KEEP] f=0.00 r=0 english    | This wife is mine.
+[KEEP] f=0.00 r=0 english    | Children are mine.
+[KEEP] f=0.00 r=0 english    | This family is mine.
+[KEEP] f=0.25 r=1 english    | This griha is mine.
+[KEEP] f=0.25 r=1 english    | This kshetra is mine.
+[KEEP] f=0.00 r=0 english    | This land and property is mine, this land is mine, this country is mine, these friends are mine – everything belongs to me, I and mine - this is moha.
+[KEEP] f=0.31 r=2 english    | Janasya moho yam aham mameti, this I and mine, this is janasya moham, this is delusion.
+[KEEP] f=0.00 r=0 english    | One should give it up.
+[KEEP] f=0.09 r=1 english    | Really, all these things belong to Krishna, nothing belongs to you.
+[KEEP] f=0.09 r=1 english    | Buddhiman loka - one who is really intelligent, he should know.
+[KEEP] f=0.37 r=4 english    | Then therefore Bhaktivinoda Thakura says ataeva maya-moha chadi buddhiman, he is really intelligent - he gives up this maya-moha.
+[KEEP] f=0.05 r=1 english    | Arjuna was first lamenting, “No, I wont kill, these are my kith and kin, blood relationships, related to this body, my superiors, guru-janas, my friends, so-called friends, my sons, my father-in-law, all these brother-in-laws, all these family members.
+[KEEP] f=0.00 r=0 english    | How can he kill them?
+[KEEP] f=0.00 r=0 english    | You see, they are lamenting, just thinking of their killing, thinking of the death is so much pain, pain in his heart.
+[KEEP] f=0.44 r=6 english    | He told, “No, I cant fight, Oh Krishna, I cant fight.” gandivam sramsate hastat tvak caiva paridahyate na ca shaknomy avasthatum bhramativa ca me manah.
+[KEEP] f=0.25 r=1 english    | Krishna is prompting him.
+[KEEP] f=0.20 r=2 english    | Try, try, try, do this, yuddhaya yujyasva, you Arjuna, you are such a weak-hearted fellow.
+[KEEP] f=0.17 r=1 english    | This is drupada you are parantapa, you have killed so many enemies.
+[KEEP] f=0.20 r=1 english    | Parantapa - one who kills enemies is known as parantapa.
+[KEEP] f=0.00 r=0 english    | How have you developed this weakness of heart?
+[KEEP] f=0.00 r=0 english    | This is weakness of heart, you get up and fight.
+[KEEP] f=0.14 r=1 english    | He says, “No Krishna, I cant fight.
+[KEEP] f=0.21 r=6 english    | gandivam sramsate hastat tvak caiva paridahyate - my whole body is burning, my whole body is burning as if burning in the fire, just thinking of their death.
+[KEEP] f=0.37 r=3 english    | tvak caiva paridahyate na ca shaknomy avasthatum bhramativa ca me manah, my head is reeling, I cannot stand up.
+[KEEP] f=0.00 r=0 english    | How can I fight?
+[KEEP] f=0.00 r=0 english    | I cant fight.
+[KEEP] f=0.00 r=0 english    | This is lamentation.
+[KEEP] f=0.00 r=0 english    | This is the result of moha.
+[KEEP] f=0.00 r=0 english    | Moha - delusion - I and mine.
+[KEEP] f=0.00 r=0 english    | All are like this.
+[DROP] f=0.65 r=9 frac>=0.5  | When we listen to Kṛṣṇa, Bhagavad Gita, completely surrendering himself - śiṣyas te ’haṁ śādhi māṁ tvāṁ prapannam - kārpaṇya-doṣopahata-svabhāvaḥ pṛcchāmi tvāṁ dharma-sammūḍha-cetāḥ yac chreyaḥ syān niścitaṁ brūhi tan me śiṣyas te ’haṁ śādhi māṁ tvāṁ prapannam.
+[DROP] f=0.50 r=1 frac>=0.5  | Oh Kṛṣṇa!
+[KEEP] f=0.00 r=0 english    | I cannot think of what is real duty.
+[KEEP] f=0.00 r=0 english    | What is my duty?
+[DROP] f=0.67 r=1 frac>=0.5  | Dharma-sammūḍha-cetāḥ - kārpaṇya-doṣopahata-svabhāvaḥ.
+[KEEP] f=0.00 r=0 english    | You see - he is lamenting, he is bewildered.
+[KEEP] f=0.11 r=1 english    | So much lamentation is there, upahata-svabhavah, so much attachment, false attachment therefore this doubt comes, this moha - false attachment, no real attachment towards Krishna, this false attachment gives him misery, karpanya-doshopahata-svabhavah - dharma-sammudha-cetah, this shreya, I don't know what is most beneficial to me.
+[KEEP] f=0.00 r=0 english    | Is this beneficial to me?
+[KEEP] f=0.00 r=0 english    | I dont know.
+[KEEP] f=0.00 r=0 english    | I am bewildered.
+[KEEP] f=0.00 r=0 english    | I cant think of what is my duty - what should be done?
+[KEEP] f=0.06 r=1 english    | Krishna is saying, prompting him to fight - he says no - this is not good.
+[KEEP] f=0.00 r=0 english    | If I fight and kill them, I'll go to hell?
+[KEEP] f=0.00 r=0 english    | It is better to become karma-sannyasi.
+[KEEP] f=0.00 r=0 english    | Why such dreadful fighting?
+[KEEP] f=0.11 r=3 english    | Just thinking - this is the wickedness, mana tumi bada dusta, prompting the wicked mind, like this - this moha - this is the result of this moha.
+[KEEP] f=0.44 r=5 english    | Therefore, shishyas te ham shadhi mam tvam prapannam, at last this is the right course, come to this right path, shishyas te ham shadhi mam tvam prapannam.
+[KEEP] f=0.06 r=1 english    | He knows everything, hes my friend, Krishna sakha he knows everything - so I become your disciple.
+[KEEP] f=0.00 r=0 english    | I come under your discipline.
+[KEEP] f=0.00 r=0 english    | You just inflict discipline unto me.
+[KEEP] f=0.33 r=2 english    | shadhi mam, inflict discipline - give instructions, tattva upadesha.
+[KEEP] f=0.25 r=1 english    | Give me tattva upadesha.
+[KEEP] f=0.20 r=1 english    | That's the meaning of shadhi.
+[KEEP] f=0.00 r=0 english    | I become your disciple.
+[KEEP] f=0.25 r=1 english    | Guru gives tattva upadesha.
+[KEEP] f=0.17 r=1 english    | Which is very beneficial - shreya.
+[KEEP] f=0.00 r=0 english    | He knows.
+[KEEP] f=0.40 r=3 english    | He knows krishna-tattva, yei krishna-tattva-vetta, sei guru haya, Mahaprabhu says.
+[KEEP] f=0.23 r=1 english    | One who knows krishna-tattva, he knows everything, hell give Krishna - tattva upadesha.
+[KEEP] f=0.00 r=0 english    | Then your miseries will be mitigated.
+[KEEP] f=0.00 r=0 english    | This moha, delusion will go.
+[DROP] f=0.63 r=12 frac>=0.5  | When he heard, then he said yes, naṣṭo mohaḥ smṛtir labdhā tvat-prasādān mayācyuta sthito ’smi gata-sandehaḥ kariṣye vacanaṁ tava.
+[KEEP] f=0.23 r=2 english    | Oh Acyuta, Oh Krishna, tvat-prasadan by your mercy, prasada means mercy, kripa - my delusion is gone now, moha is annihilated now.
+[KEEP] f=0.00 r=0 english    | Yes, I and mine, it is gone.
+[KEEP] f=0.00 r=0 english    | Everything belongs to you.
+[KEEP] f=0.00 r=0 english    | I am… I belong to you.
+[KEEP] f=0.19 r=3 english    | Everything belongs to you, amar bolite kichu nahi, there is nothing I can say is mine.
+[KEEP] f=0.00 r=0 english    | No, everything belongs to you.
+[KEEP] f=0.00 r=0 english    | I can learn now.
+[KEEP] f=0.00 r=0 english    | Very clearly.
+[KEEP] f=0.00 r=0 english    | I can understand it.
+[KEEP] f=0.00 r=0 english    | I am fully convinced.
+[DROP] f=0.50 r=1 frac>=0.5  | naṣṭo moha.
+[KEEP] f=0.21 r=2 english    | So guru, the spiritual master, the real guru, pure devotee, krishna-tattva-vetta, coming in bonafide disciplic succession, pure Vaisnava, he gives tattva upadesha, then this moha is annihilated, nashto moha.
+[DROP] f=1.00 r=7 frac>=0.5  | smṛtir labdhā tvat-prasādān mayācyuta sthito ’smi gata-sandehaḥ.
+[KEEP] f=0.00 r=0 english    | All the doubts are cleared.
+[DROP] f=1.00 r=1 frac>=0.5  | Sarva-saṁśayāḥ?
+[KEEP] f=0.00 r=0 english    | This is one of the qualifications of the guru, guru-tattva, he can dispel all sorts of doubts of the disciple, all sorts of doubts, not a slightest doubt will be there.
+[KEEP] f=0.18 r=2 english    | Sansayatma vinasyati - if there is slightest doubt, he will perish.
+[KEEP] f=0.00 r=0 english    | Wherever doubt arises in your mind, bring it to your guru, spiritual master and dispel it.
+[KEEP] f=0.00 r=0 english    | Dont concoct.
+[KEEP] f=0.00 r=0 english    | Dont compromise.
+[KEEP] f=0.00 r=0 english    | Dont manufacture.
+[KEEP] f=0.00 r=0 english    | Dont listen to anybody else.
+[KEEP] f=0.00 r=0 english    | Youll perish.
+[KEEP] f=0.00 r=0 english    | Only I'll listen to one body.
+[KEEP] f=0.42 r=5 english    | I have accepted, I have, shishyas te ham shadhi mam tvam prapannam, I have fully surrendered myself, purnatma nivedana.
+[KEEP] f=0.00 r=0 english    | I have done, I have accepted.
+[KEEP] f=0.00 r=0 english    | Ill only listen to him.
+[KEEP] f=0.00 r=0 english    | Whatever he says, I will accept.
+[KEEP] f=0.00 r=0 english    | Nobody else.
+[KEEP] f=0.00 r=0 english    | Isnt it?
+[KEEP] f=0.00 r=0 english    | They will make you bewildered.
+[KEEP] f=0.00 r=0 english    | Dont listen.
+[KEEP] f=0.00 r=0 english    | Anytime, any moment, any doubt arises, bring it to your spiritual master.
+[KEEP] f=0.00 r=0 english    | Listen to him.
+[KEEP] f=0.20 r=2 english    | He is guru, he is able to - sarva-samshayah vinasyati?
+[KEEP] f=0.00 r=0 english    | He is able to dispel all sorts of doubts.
+[KEEP] f=0.00 r=0 english    | And make the disciple fully convinced.
+[DROP] f=1.00 r=9 frac>=0.5  | naṣṭo mohaḥ smṛtir labdhā tvat-prasādān mayācyuta sthito ’smi gata-sandehaḥ.
+[KEEP] f=0.11 r=1 english    | Sandeha means doubts - all doubts are cleared now.
+[KEEP] f=0.43 r=3 english    | And fully convinced - karishye vacanam tava.
+[KEEP] f=0.17 r=2 english    | As Krishna says now you do whatever you like - yathecchasi tatha kuru - you can understand everything.
+[KEEP] f=0.00 r=0 english    | You listen to me very carefully, attentively.
+[KEEP] f=0.00 r=0 english    | all your doubts are cleared.
+[KEEP] f=0.00 r=0 english    | Then do whatever you like.
+[KEEP] f=0.00 r=0 english    | Independence is granted, it is not forced, no compulsion, there is no question of compulsion.
+[KEEP] f=0.17 r=1 english    | Krishna has never forced, never compulsion.
+[KEEP] f=0.00 r=0 english    | If there is compulsion, if there is force, there is no question of love, no question of love.
+[KEEP] f=0.00 r=0 english    | You see, there is no question of love.
+[KEEP] f=0.11 r=2 english    | Therefore independence is granted, the minute independence is granted, yathecchasi tatha kuru - you do as you like.
+[KEEP] f=0.00 r=0 english    | You see, if there is compulsion, if there is forcing, no question of love.
+[KEEP] f=0.00 r=0 english    | There is no love.
+[DROP] f=1.00 r=4 frac>=0.5  | Kṛṣṇa-prema vakya Bhakta-prema bandha.
+[KEEP] f=0.00 r=0 english    | He is ever free but he is bound up - the bondage of love of his devotee.
+[KEEP] f=0.00 r=0 english    | So therefore independence has been given - otherwise there is no question of love will arise.
+[KEEP] f=0.25 r=2 english    | Therefore Krishna says, yathecchasi tatha kuru, you now do whatever you like.
+[KEEP] f=0.00 r=0 english    | Fully convinced.
+[KEEP] f=0.27 r=3 english    | na karishye vacanam tava, Ill fight and kill what you desire.
+[KEEP] f=0.07 r=2 english    | I'll carry out your order - whatever you say - this is the disciple and spiritual master relationship - guru-shishya sambandha - based on a loving relationship.
+[KEEP] f=0.00 r=0 english    | Guru never compels, guru never forces, guru says everything, dispels all such doubts of the disciple - should be convinced - not a tinge of doubt will be there - now youll do whatever you like.
+[KEEP] f=0.10 r=1 english    | - thats the process - and an intelligent disciple like Arjuna says, “No Guru Maharaja whatever you say Ill do.
+[DROP] f=0.11 r=4 verse(run>=4+cited) | I have no other thought.” This is the proper use of independence, when one takes shelter, when one surrenders himself completely to the lotus feet of guru - no other thought - no other thought - guru-mukha-padma-vākya, cittete koribo aikya - what gurudeva says that should be carried out [verse] I must do what Kṛṣṇa desires.
+[KEEP] f=0.14 r=1 english    | What Krishna desires just comes through guru.
+[KEEP] f=0.14 r=3 english    | Guru is his representative - acaryam mam vijaniyan - he is prakasha vigraha - Krishnas desire comes through lips of a guru - guru says that karishye, I have to do - may be very unfavorable, very unfavorable on the part of Arjuna to kill his kith and kin but he did it - this is love.
+[KEEP] f=0.00 r=0 english    | This is true love, pure love.
+[KEEP] f=0.05 r=1 english    | One business - to please Krishna - it's true love - you see Let all my so-called friends leave me.
+[KEEP] f=0.12 r=1 english    | I don't care, but I cannot leave Krishna.
+[KEEP] f=0.00 r=0 english    | I cannot leave my guru, spiritual master, I can't leave.
+[KEEP] f=0.00 r=0 english    | This is true love.
+[DROP] f=0.41 r=7 run>=7     | kariṣye vacanaṁ tava, ataeva māyā-moha chāḍi’ buddhimān because all my moha and delusion has vanished, is destroyed.
+[KEEP] f=0.00 r=0 english    | Now I have clear-cut vision.
+[KEEP] f=0.06 r=1 english    | I am fully convinced - this is the goal of life to be achieved - to please Krishna.
+[DROP] f=0.88 r=6 frac>=0.5  | Ataeva māyā-moha chāḍi’ buddhimān nitya-tattva kṛṣṇa-bhakti koruna sandhān.
+[KEEP] f=0.25 r=1 english    | This is buddhiman -?
+[KEEP] f=0.12 r=1 english    | Give up this maya and inquire about it.
+[DROP] f=0.67 r=2 frac>=0.5  | Bhaktivinoda Ṭhākura says.
+[DROP] f=0.50 r=1 frac>=0.5  | Hare Kṛṣṇa.
+[KEEP] f=0.23 r=2 english    | So convinced - shadhu-shastra-guru So chant Hare Krishna - this firm faith - mana dridha hari - tava samsara - why are you cherishing this doubt?
+[DROP] f=0.50 r=1 frac>=0.5  | Duṣṭa mana?
+[KEEP] f=0.00 r=0 english    | Wicked mind.
+[KEEP] f=0.10 r=1 english    | Chant Hare Krishna - instructing - This is the conclusion.
+[KEEP] f=0.00 r=0 english    | Thank you very much.
+[KEEP] f=0.35 r=3 english    | Shrila Gour Govinda Swami Guru Maharaja ki jaya Prabhupada-ji Maharaja ki jaya Samaveta bhakta-brinda ki jaya Devotee: I have a question about the namabhasa stage - because this word always comes up in literature.
+[KEEP] f=0.00 r=0 english    | I am not quite sure what it means myself.
+[DROP] f=0.67 r=2 frac>=0.5  | Namābhāsa, namābhāsa means abhāsa - nāma.
+[KEEP] f=0.00 r=0 english    | Example can be cited.
+[KEEP] f=0.00 r=0 english    | Before the sun rises, the eastern horizon looks red.
+[KEEP] f=0.00 r=0 english    | Isnt it?
+[KEEP] f=0.07 r=1 english    | Darkness is gradually vanishing, ratri-cala, The animals, the owls, the thieves, dacoits, they are leaving.
+[KEEP] f=0.00 r=0 english    | It's getting brighter, brighter, brighter but the sun has not yet risen.
+[KEEP] f=0.00 r=0 english    | Not yet risen.
+[KEEP] f=0.06 r=1 english    | It is purvabhasa - the previous symptom that the sun is getting up - its rising.
+[KEEP] f=0.15 r=1 english    | So in namabhasa, pure name has not yet risen - pure name shuddha.
+[KEEP] f=0.00 r=0 english    | Nama - do you understand?
+[KEEP] f=0.11 r=4 english    | But the sadhaka who is doing sadhana under the guidance of guru, being conscious of the offences, is trying to get rid of the offences one after another, Just not directly saying - just indirectly the same - saying towards his son - uttering the name of his son - but the very name is the name of God, Narayana, therefore when we name our children, we name after God, Krishna, Hari, Narayana, Madhusudana, like that - if we have attachment towards family, son - let it come up at the time of death, at least we will get liberation stage - that namabhasa, as Ajamila achieved - such a great sinner - maha-papi - there is one offence - nama-bala-papa-buddhi - one of the ten offences - nama-aparadha - nama-bala-papa-buddhi, committing papa (sin) at the dint of chanting nama, isnt it?
+[KEEP] f=0.03 r=1 english    | He didnt commit that offence - if someone deliberately - “Oh, I have got a weapon, a very good weapon now - one name of Krishna will annihilate all sorts of past sins of crores of lives.
+[KEEP] f=0.06 r=1 english    | Sin - reactions to sinful activities - Oh, I have got a very good weapon - now I'll chant Hare Krishna - all papa will be annihilated, reactions - then again commit more papa, then again Ill chant, then annihilated - this nama-bala-papa-buddhi - if you have this attitude then you are committing offence - it is inexcusable - this cannot be excused, one should not have this.
+[KEEP] f=0.10 r=1 english    | Ajamila had no such attitude because he is not praying to Narayana - "Please annihilate my sinful reaction, my sinful - Oh Narayana, please" - he is just calling his son - so he achieved this stage of namabhasa.
+[KEEP] f=0.00 r=0 english    | No offence.
+[KEEP] f=0.14 r=1 english    | Namabhasa means offences are not completely gone.
+[KEEP] f=0.08 r=1 english    | If offences will completely go, then pure name will rise, sun will arise, moon will rise, then prema will come, prema will come .
+[KEEP] f=0.18 r=1 english    | But in the stage of namabhasa - no question of Krishna-prema.
+[KEEP] f=0.23 r=1 english    | Namabhasa, the result of namabhasa is many These are the results of namabhasa.
+[KEEP] f=0.16 r=2 english    | - many good results are there if you achieve namabhasa stage - namabhasa nashta haya acha papa - all the papa, all the sinful activity, reactions of all sins are annihilated - finished when namabhasa is achieved - namabhasa mukti haya - you get liberation and kali is annihilated.
+[KEEP] f=0.10 r=2 english    | Namabhasa sarva-roga haya - you will be free from all sorts of diseases - you will never go to any doctor if you can attain the stage of namabhasa.
+[KEEP] f=0.00 r=0 english    | Yes, thats a fact, definitely.
+[KEEP] f=0.00 r=0 english    | Youll never go to a doctor - youll never pay a doctors bill - this is the most effective medicine.
+[KEEP] f=0.11 r=2 english    | Harer nama - This is medicine for all material diseases - bhava-roga-aushadhi - amoha-avyakta - most effective, it will never be ineffective - these are all medicines - doctors medicine will fail - this medicine will never fail.
+[KEEP] f=0.20 r=2 english    | Namabhasa sarva-roga haya nida - all diseases, because diseases are caused by prarabdha-karma - when prarabdha-karma is annihilated - where is the question of disease?
+[KEEP] f=0.00 r=0 english    | Why will diseases come?
+[KEEP] f=0.36 r=2 english    | Namabhasa sarva-rit haya shanti paya - all the aristas, all the anarthas go away.
+[KEEP] f=0.35 r=4 english    | Arista means anarthas, anarthas - all bad, bad things, bad results, arista - dakshya rakshya namabhasa anartha se kaya -manda-graha - evil planets.
+[KEEP] f=0.09 r=2 english    | Shani-graha, Rahu-graha - they go to the astrologer to see their horoscope - so you please astrologer, see if good fortune is coming or some bad is coming – we never go because we have taken shelter of Harinama - it will annihilate all aristas, all manda-graha, all prarabdha-karma, everything gone - why are you going?
+[KEEP] f=0.00 r=0 english    | Have complete faith in the name - take shelter, complete shelter automatically.
+[KEEP] f=0.10 r=1 english    | According to prarabdha-karma, reactions, your horoscope says you will die, you will die, very bad planet - manda-graha has come.
+[KEEP] f=0.00 r=0 english    | It will cause you death - take to the name chanting - no death.
+[KEEP] f=0.33 r=1 english    | Ajamila didnt die.
+[KEEP] f=0.00 r=0 english    | His lifespan is increased, he didnt die, he was saved from death.
+[KEEP] f=0.00 r=0 english    | So if the astrologer says this man has already died, oh, hes surviving - how strange?
+[KEEP] f=0.00 r=0 english    | Hes dead but hes surviving - how is this?
+[DROP] f=1.00 r=2 frac>=0.5  | Dakṣya, rakṣya?
+[KEEP] f=0.17 r=1 english    | - going to hell, narake-pati he was dragged to hell, Ajamila, no?
+[KEEP] f=0.12 r=1 english    | Hes liberated, hes free from the clutches of Yamaduta - all prarabdha-karma reactions to all karmas are all finished, all annihilated if you achieve namabhasa.
+[KEEP] f=0.20 r=2 english    | Sarva-tirtha haya if you have achieved the stage of namabhasa, sarva-tirthas, all tirthas, all auspiciousness comes, achieve the stage of namabhasa and achieve pure name.
+[KEEP] f=0.03 r=1 english    | Go right up to that stage - suddha-nama - let that brilliant sun come out - that means pure name will come out - when it comes out - what is left behind?
+[KEEP] f=0.00 r=0 english    | Everything is achieved.
+[KEEP] f=0.33 r=1 english    | This is namabhasa.
+[KEEP] f=0.20 r=1 english    | Do you understand, Harivilasa Prabhu?
+[DROP] f=0.60 r=1 frac>=0.5  | Abhāsa - nāma-abhāsa - nāma-abhāsa.
+[KEEP] f=0.33 r=1 english    | Abhasa means symptom.
+[KEEP] f=0.00 r=0 english    | Symptom - it shows that the name is rising - it shows that the sun is rising - I give the example of the sun - before I see - the eastern horizon - becomes red.
+[KEEP] f=0.03 r=1 english    | Darkness gradually vanishes - it's getting brighter, brighter - the owls, the thieves, the dacoits, those who are ratri-cela… wandering during the dark night, they are going, fleeing, fleeing, fleeing.
+[KEEP] f=0.00 r=0 english    | Do you understand?
+[KEEP] f=0.00 r=0 english    | Similarly, all these are going.
+[KEEP] f=0.38 r=1 english    | Vaishnava-gayatri is kama-gayatri - we have all gayatris.
+[KEEP] f=0.29 r=3 english    | Number one is Brahma-gayatri, Guru-gayatri, Kama-gayatri - this is most important, Kama-gayatri - ?
+[KEEP] f=0.44 r=2 english    | Kama-bija tara-upasana - Kaviraja Goswami says that in CC.
+[DROP] f=0.50 r=1 frac>=0.5  | Vaiṣṇava-gāyatrī is different, gāyatrī is Kāma-gāyatrī.
+[KEEP] f=0.40 r=1 english    | Krishhna is Madana - Cupid.
+[KEEP] f=0.00 r=0 english    | He is not material Cupid.
+[KEEP] f=0.25 r=1 english    | Spiritual Cupid - Kandarpa-koti-vishesha-shobham.
+[KEEP] f=0.07 r=1 english    | The beauty of Krishhna surpasses the beauty of crores of Cupids - old age .
+[KEEP] f=0.33 r=3 english    | Brahma-samhita says - adyam puranam bhushnam - navayauvana - Hes always fresh and young, Krishhna - and how to do bhajana?
+[KEEP] f=0.00 r=0 english    | That?
+[KEEP] f=0.00 r=0 english    | New Cupid.
+[KEEP] f=0.25 r=3 english    | Aprakrita, Madan, Madan Cupid is non-material - aprakrita - I use this word, Sanskrit word prakrita means material, aprakrita means opposite, immaterial or spiritual.
+[KEEP] f=0.39 r=5 english    | Krishhna is aprakrita navina-madana… Kama-bija kama-gayatri tara-upasana, those who have developed bhava stage, going up to prema stage, they have been awarded Kama-gayatri.
+[KEEP] f=0.13 r=1 english    | Because that Madan will be enchanted with you, pleased with you if you chant Kama-gayatri.
+[KEEP] f=0.00 r=0 english    | Do you understand?
+[KEEP] f=0.26 r=3 english    | That is Brahminical stage - Vaishnava-Brahman means he is superior to the so-called Brahmana - varnashrama-dharma: Brahmana, shudra, vaishya, kshatriya, Brahmana, but Vaishnava-Brahmana is not that Brahmana.
+[KEEP] f=0.00 r=0 english    | That Brahmana is in the sattva stage, material stage, isnt it?
+[KEEP] f=0.15 r=1 english    | The Vaishnava-Brahmana is superior to that so-called Brahmana because they have love, prema.
+[DROP] f=1.00 r=1 frac>=0.5  | Kṛṣhṇa-prema.
+[KEEP] f=0.29 r=2 english    | Yes, chanting Kama-gayatri, Madhana is bound up.
+[KEEP] f=0.00 r=0 english    | Do you understand?
+[KEEP] f=0.00 r=0 english    | Very deep thing, it requires much more time to explain it, I have no language to explain it, it is very, very deep.
+[KEEP] f=0.00 r=0 english    | The question is so short, the answer is very, very deep.
+[KEEP] f=0.15 r=2 english    | So by chanting Hare Krishhna Maha-mantra, those who have achieved this namabhasa stage and are just progressing - they are given gayatri - do you understand?
+[KEEP] f=0.00 r=0 english    | Do you follow me now?
+[KEEP] f=0.00 r=0 english    | It is not awarded to one and all.
+[KEEP] f=0.00 r=0 english    | Its a stage of progress, development.
