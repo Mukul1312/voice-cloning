@@ -474,8 +474,14 @@ def main():
     except Exception: pass
 
     hf_token = os.environ.get("HF_TOKEN")
+    if not hf_token:                                    # fallback: a token FILE (keeps the secret off the CLI/chat)
+        for p in ("/workspace/.hf_token", str(Path.home() / ".hf_token")):
+            if Path(p).exists():
+                hf_token = Path(p).read_text(encoding="utf-8").strip()
+                break
     if not hf_token:
-        sys.exit("Set HF_TOKEN (and accept the pyannote community-1 gated repos) before running.")
+        sys.exit("No HF token. Either `export HF_TOKEN=...` or write it to /workspace/.hf_token "
+                 "(and accept the pyannote community-1 gated repos first).")
     for p in args.ref:
         if not Path(p).exists():
             sys.exit(f"reference clip not found: {p}")
