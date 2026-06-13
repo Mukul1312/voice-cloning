@@ -13,3 +13,11 @@ pretrained_models/
 
 # OS / editor cruft
 .DS_Store
+
+# Secrets — NEVER commit (the repo is public)
+.hf_token
+*.token
+
+# Local skill cache
+.claude/skills/
+skills-lock.json

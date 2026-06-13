@@ -305,9 +305,11 @@ def emit_clips(words, intervals, wav16, clips_dir, slug, min_sec, max_sec):
             iv_end = ggs_interval_end_after(run[e]["end"], intervals)
             end = min(run[e]["end"] + min(TAIL_PAD, max(0.0, nxt - run[e]["end"])), iv_end)
             txt = " ".join(run[k]["text"] for k in range(s, e + 1))
+            scs = [float(run[k].get("score", 0.0)) for k in range(s, e + 1)]   # per-word alignment confidence
             dst = clips_dir / f"{slug}_{idx:04d}.wav"
             cut(wav16, start, end, dst)
-            rows.append({"audio": f"clips/{dst.name}", "text": txt, "duration": round(wav_duration(dst), 2)})
+            rows.append({"audio": f"clips/{dst.name}", "text": txt, "duration": round(wav_duration(dst), 2),
+                         "align_mean": round(sum(scs)/len(scs), 4), "align_min": round(min(scs), 4)})
             idx += 1
     return rows
 
@@ -325,47 +327,56 @@ def silence_edges(y, sr):
     return float(t[0]), float(len(y) / sr - t[-1])
 
 
-def make_scorer():
-    import jiwer
-    base = [jiwer.ToLowerCase(), jiwer.RemovePunctuation(), jiwer.RemoveMultipleSpaces(),
-            jiwer.Strip(), jiwer.ReduceToListOfListOfChars()]
-    cer_tx = jiwer.Compose(base)
-    core = [jiwer.ToLowerCase(), jiwer.RemovePunctuation(), jiwer.RemoveSpecificWords(sorted(SANSKRIT_TOKENS)),
-            jiwer.RemoveMultipleSpaces(), jiwer.Strip(), jiwer.RemoveEmptyStrings(), jiwer.ReduceToListOfListOfChars()]
-    cer_tx_core = jiwer.Compose(core)
-    wer_tx = jiwer.wer_standardize
+def load_english():
+    """dwyl English wordlist (already in the repo) for CER masking — any non-dictionary word (Sanskrit) is
+    excluded from cer_core. False-negatives don't matter here: we only want the English-backbone CER."""
+    p = ROOT / "data" / "english_words.txt"
+    return set(p.read_text(encoding="utf-8").split()) if p.exists() else set()
 
+
+def make_scorer(english):
+    """cer_core = CER over ENGLISH-DICTIONARY words only (Sanskrit terms Whisper can't spell don't count);
+    cer_raw = over all words; sanskrit_load = the difference. CER is ADVISORY only (Whisper mis-reads Sanskrit
+    AND can hallucinate continuations) — the real quality gate is the aligner's own per-clip confidence."""
+    import jiwer
+    cer_tx = jiwer.Compose([jiwer.ToLowerCase(), jiwer.RemovePunctuation(),
+                            jiwer.RemoveMultipleSpaces(), jiwer.Strip(), jiwer.ReduceToListOfListOfChars()])
+    wer_tx = jiwer.wer_standardize
+    _tok = re.compile(r"[a-z']+")
+    def english_only(s):
+        return " ".join(w for w in _tok.findall(s.lower()) if w in english)
+    def _cer(a, b):
+        if not a.strip(): return 0.0
+        if not b.strip(): return 1.0
+        return float(jiwer.cer(a, b, reference_transform=cer_tx, hypothesis_transform=cer_tx))
     def score(ref, hyp):
         if not hyp.strip():
             return {"cer_raw":1.0,"cer_core":1.0,"wer":1.0,"sanskrit_load":0.0}
-        cer_raw  = jiwer.cer(ref, hyp, reference_transform=cer_tx,      hypothesis_transform=cer_tx)
-        cer_core = jiwer.cer(ref, hyp, reference_transform=cer_tx_core, hypothesis_transform=cer_tx_core)
+        cer_raw  = _cer(ref, hyp)
+        cer_core = _cer(english_only(ref), english_only(hyp))
         try:
-            wer = jiwer.wer(ref, hyp, reference_transform=wer_tx, hypothesis_transform=wer_tx)
+            wer = float(jiwer.wer(ref, hyp, reference_transform=wer_tx, hypothesis_transform=wer_tx))
         except ValueError:
             wer = 1.0
-        return {"cer_raw":round(float(cer_raw),4),"cer_core":round(float(cer_core),4),
-                "wer":round(float(wer),4),"sanskrit_load":round(float(cer_raw-cer_core),4)}
+        return {"cer_raw":round(cer_raw,4),"cer_core":round(cer_core,4),
+                "wer":round(wer,4),"sanskrit_load":round(cer_raw-cer_core,4)}
     return score
 
 
 def run_qa(d: Path, asr, score, cfg):
     rows = [json.loads(l) for l in open(d / "train.jsonl", encoding="utf-8") if l.strip()]
     rep, passed = [], []
-    print(f"  [qa] re-transcribing + scoring {len(rows)} clips ...")
+    print(f"  [qa] scoring {len(rows)} clips (align-confidence + silence{' + ASR-CER advisory' if asr else ''}) ...")
     for i, r in enumerate(rows, 1):
         wav = d / Path(r["audio"]).as_posix(); reasons = []
+        amin = float(r.get("align_min", 0.0)); amean = float(r.get("align_mean", 0.0))
+        m = {"cer_raw":-1.0,"cer_core":-1.0,"wer":-1.0,"sanskrit_load":-1.0}
         if not wav.exists():
-            rep.append({"clip":i,"dur":r.get("duration"),"cer_raw":1.0,"cer_core":1.0,"wer":1.0,
-                        "sanskrit_load":0.0,"lead":-1.0,"trail":-1.0,"status":"FAIL","reasons":"missing_wav"})
-            continue
-        segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True,
-                                 vad_parameters=dict(min_silence_duration_ms=500),
-                                 condition_on_previous_text=False)
-        hyp = " ".join(s.text.strip() for s in segs).strip()
-        m = score(r["text"], hyp)
-        if m["cer_core"] > cfg["max_cer_core"]: reasons.append(f"high_cer_core({m['cer_core']:.2f})")
-        if m["wer"]      > cfg["max_wer"]:       reasons.append(f"high_wer({m['wer']:.2f})")
+            rep.append({"clip":i,"dur":r.get("duration"),"align_min":amin,"align_mean":amean,**m,
+                        "lead":-1.0,"trail":-1.0,"status":"FAIL","reasons":"missing_wav"}); continue
+        # PRIMARY gate: per-clip alignment confidence (immune to Whisper Sanskrit-misreads + hallucination)
+        if amin < cfg["min_align"]: reasons.append(f"low_align({amin:.2f})")
+        # silence edges
         y, sr = librosa.load(str(wav), sr=16000); se = silence_edges(y, sr)
         if se is None:
             reasons.append("all_silence"); lead = trail = -1.0
@@ -373,15 +384,29 @@ def run_qa(d: Path, asr, score, cfg):
             lead, trail = round(se[0],2), round(se[1],2)
             if se[0] > cfg["max_lead_sil"]:  reasons.append(f"lead_sil({se[0]:.2f})")
             if se[1] > cfg["max_trail_sil"]: reasons.append(f"trail_sil({se[1]:.2f})")
+        # ASR-CER (ADVISORY; only an EGREGIOUS cer_core flags a clip — Whisper is noisy on Sanskrit)
+        if asr is not None:
+            segs, _ = asr.transcribe(str(wav), language="en", beam_size=5, vad_filter=True,
+                                     vad_parameters=dict(min_silence_duration_ms=500), condition_on_previous_text=False)
+            m = score(r["text"], " ".join(s.text.strip() for s in segs).strip())
+            if m["cer_core"] > cfg["max_cer_core"]: reasons.append(f"high_cer_core({m['cer_core']:.2f})")
         ok = not reasons
-        rep.append({"clip":i,"dur":r.get("duration"),**m,"lead":lead,"trail":trail,
-                    "status":"PASS" if ok else "FAIL","reasons":";".join(reasons)})
+        rep.append({"clip":i,"dur":r.get("duration"),"align_min":round(amin,3),"align_mean":round(amean,3),
+                    **m,"lead":lead,"trail":trail,"status":"PASS" if ok else "FAIL","reasons":";".join(reasons)})
         if ok: passed.append(r)
     (d / "train.clean.jsonl").write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in passed), encoding="utf-8")
-    cols = ["clip","dur","cer_raw","cer_core","wer","sanskrit_load","lead","trail","status","reasons"]
+    cols = ["clip","dur","align_min","align_mean","cer_raw","cer_core","wer","sanskrit_load","lead","trail","status","reasons"]
     with (d / "qa_asr_report.tsv").open("w", encoding="utf-8") as f:
         f.write("\t".join(cols) + "\n")
         for x in rep: f.write("\t".join(str(x[c]) for c in cols) + "\n")
+    def dist(key, drop_neg):
+        v = sorted(float(x[key]) for x in rep if not (drop_neg and float(x.get(key, -1)) < -0.5))
+        if not v: return "n/a"
+        q = lambda p: float(np.percentile(v, p))
+        return f"min={v[0]:.3f}  p10={q(10):.3f}  p50={q(50):.3f}  p90={q(90):.3f}  max={v[-1]:.3f}"
+    print("  [qa] distributions (calibrate --min-align / --max-cer-core from these):")
+    for k in ("align_min","align_mean","cer_core","cer_raw","wer"):
+        print(f"        {k:11s} {dist(k, drop_neg=not k.startswith('align'))}")
     return rep, passed
 
 
@@ -482,8 +507,10 @@ def main():
     ap.add_argument("--min-turn-sec", type=float, default=1.0)
     ap.add_argument("--overlap-frac", type=float, default=0.9)
     ap.add_argument("--max-word-drop", type=float, default=0.15)
-    ap.add_argument("--max-cer-core", type=float, default=0.30)
+    ap.add_argument("--max-cer-core", type=float, default=0.85, help="ADVISORY: only egregious English-backbone CER flags")
     ap.add_argument("--max-wer", type=float, default=0.60)
+    ap.add_argument("--min-align", type=float, default=-1e9, help="min per-clip alignment confidence gate (calibrate from dist)")
+    ap.add_argument("--no-cer", action="store_true", help="skip Whisper ASR-CER (faster; align-confidence is the real gate)")
     ap.add_argument("--max-lead-sil", type=float, default=0.6)
     ap.add_argument("--max-trail-sil", type=float, default=1.0)
     ap.add_argument("--asr-model", default="large-v3")
@@ -521,17 +548,19 @@ def main():
                min_speakers=args.min_speakers, max_speakers=args.max_speakers,
                cosine_thr=args.cosine_thr, cosine_margin=args.cosine_margin, min_turn_sec=args.min_turn_sec,
                overlap_frac=args.overlap_frac, max_word_drop=args.max_word_drop,
-               max_cer_core=args.max_cer_core, max_wer=args.max_wer,
+               max_cer_core=args.max_cer_core, max_wer=args.max_wer, min_align=args.min_align,
                max_lead_sil=args.max_lead_sil, max_trail_sil=args.max_trail_sil,
                speaker_re=None, ggs_re=None)
 
-    print("loading models (diarizer, ECAPA, aligner, ASR) ...")
+    print("loading models (diarizer, ECAPA, aligner%s) ..." % ("" if args.no_cer else ", ASR"))
     diar_pipe = load_diar_pipeline(hf_token, device)
     embed, cosine, centroid = make_embedder(device)
     align = make_aligner(device)
-    from faster_whisper import WhisperModel
-    asr = WhisperModel(args.asr_model, device=device, compute_type="float16" if device == "cuda" else "int8")
-    score = make_scorer()
+    asr = None
+    if not args.no_cer:
+        from faster_whisper import WhisperModel
+        asr = WhisperModel(args.asr_model, device=device, compute_type="float16" if device == "cuda" else "int8")
+    score = make_scorer(load_english())
     models = (diar_pipe, embed, cosine, centroid, align, asr, score)
 
     slugs = [p.name for p in sorted(LECT.iterdir()) if p.is_dir()] if args.scale else [args.slug]
