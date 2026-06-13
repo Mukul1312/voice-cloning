@@ -112,13 +112,22 @@ def ggs_only_text(raw: str, speaker_re, ggs_re) -> str:
 # ===================================================================================
 def load_diar_pipeline(hf_token, device):
     import torch
+    import pyannote.audio as pa
     from pyannote.audio import Pipeline
-    pipe = Pipeline.from_pretrained("pyannote/speaker-diarization-community-1", token=hf_token)
+    # pyannote 4.x (needs torch 2.8 -> host CUDA>=12.6): community-1 + token=
+    # pyannote 3.x (runs on torch 2.4 -> host CUDA 12.4):  speaker-diarization-3.1 + use_auth_token=
+    if int(pa.__version__.split(".")[0]) >= 4:
+        model = "pyannote/speaker-diarization-community-1"
+        pipe = Pipeline.from_pretrained(model, token=hf_token)
+    else:
+        model = "pyannote/speaker-diarization-3.1"
+        pipe = Pipeline.from_pretrained(model, use_auth_token=hf_token)
     if pipe is None:
         raise RuntimeError(
-            "pyannote Pipeline.from_pretrained returned None — accept the terms for EVERY gated repo "
-            "the community-1 model card lists, and use a valid READ token (HF_TOKEN).")
+            f"pyannote Pipeline.from_pretrained returned None for {model} — accept the terms for EVERY gated "
+            f"repo it lists (for 3.1 that's speaker-diarization-3.1 + segmentation-3.0) and use a valid READ token.")
     pipe.to(torch.device(device))
+    print(f"  [diarize] {model} (pyannote {pa.__version__}) on {device}")
     return pipe
 
 
