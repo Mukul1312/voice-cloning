@@ -233,14 +233,24 @@ def verify_ggs(turns, secs, wav16, ref_clips, embed, cosine, centroid, cfg):
 # Stage C — forced alignment (ctc-forced-aligner / MMS)
 # ===================================================================================
 def make_aligner(device):
-    import torch
+    import torch, torchaudio
     from ctc_forced_aligner import (load_alignment_model, generate_emissions, preprocess_text,
-                                     get_alignments, get_spans, postprocess_results, load_audio)
+                                     get_alignments, get_spans, postprocess_results)
     dtype = torch.float16 if device == "cuda" else torch.float32
     model, tokenizer = load_alignment_model(device, dtype=dtype)
 
+    def _load_16k_mono(path):
+        # load with torchaudio (our input is already 16k mono) -> 1D waveform on model device/dtype.
+        # avoids ctc-forced-aligner's load_audio(), which requires torchcodec (incompatible w/ torch 2.4).
+        wav, sr = torchaudio.load(path)
+        if wav.shape[0] > 1:
+            wav = wav.mean(0, keepdim=True)
+        if sr != 16000:
+            wav = torchaudio.functional.resample(wav, sr, 16000)
+        return wav.squeeze(0).to(model.device, model.dtype)
+
     def align(audio_path, transcript, language="eng", batch_size=8):
-        wav = load_audio(audio_path, model.dtype, model.device)
+        wav = _load_16k_mono(audio_path)
         emissions, stride = generate_emissions(model, wav, batch_size=batch_size)
         tok_starred, txt_starred = preprocess_text(transcript, romanize=True, language=language, split_size="word")
         segments, scores, blank = get_alignments(emissions, tok_starred, tokenizer)
