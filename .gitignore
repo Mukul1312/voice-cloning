@@ -1,0 +1,15 @@
+# Python env (recreated on each machine — never commit)
+.venv/
+__pycache__/
+*.pyc
+
+# Firecrawl scrape dumps (research scratch)
+.firecrawl/
+
+# Model/weight caches (large; re-downloaded per machine)
+*.pt
+models/
+pretrained_models/
+
+# OS / editor cruft
+.DS_Store
