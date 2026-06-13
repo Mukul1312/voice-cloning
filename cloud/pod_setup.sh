@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # =====================================================================================
 # pod_setup.sh — one-time environment setup on a RunPod pod.
-# Assumes the image runpod/pytorch:...torch280... (torch 2.8.0 + CUDA 12.8.1 preinstalled),
-# so we do NOT reinstall torch — we only add the audio/ML-pipeline deps on top, keeping the
-# torchaudio 2.8 / torchcodec 0.7 set that pyannote 4.0 needs (torchaudio>=2.9 breaks pyannote;
-# torchcodec>=0.8 segfaults). Mirrors the verified Colab install, minus the torch trio.
+# Base image: runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04 — CUDA 12.4 floor, so it starts
+# on any host with driver >= 12.4 (the cu128/torch280 image needs a 12.8 host and won't start on 12.7).
+# pyannote.audio 4.0 PINS torch==2.8.0, so we install the torch trio FRESH from the cu126 index
+# (torch 2.8 has no cu124 wheels; the cu126 build runs on any host driver >= 12.6). torchaudio 2.8 +
+# torchcodec 0.7 is the pyannote-safe set (torchaudio>=2.9 removes AudioMetaData; torchcodec>=0.8 segfaults).
 # Usage:  bash cloud/pod_setup.sh
 # =====================================================================================
 set -euo pipefail
@@ -15,8 +16,8 @@ apt-get -qq update && apt-get -qq install -y ffmpeg git build-essential python3-
 echo "[setup 2/6] numpy pin (keeps numba/librosa coherent) ..."
 pip -q install "numpy>=2.1,<2.3"
 
-echo "[setup 3/6] pin torchaudio 2.8 + torchcodec 0.7 to match the image's torch 2.8 (pyannote-safe set) ..."
-pip -q install "torchaudio==2.8.0" "torchcodec==0.7"
+echo "[setup 3/6] torch 2.8 trio, cu126 build (replaces image torch 2.4; runs on host CUDA>=12.6; pyannote-4.0 pins torch 2.8) ..."
+pip -q install --index-url https://download.pytorch.org/whl/cu126 "torch==2.8.0" "torchaudio==2.8.0" "torchcodec==0.7"
 
 echo "[setup 4/6] diarization + speaker-verify ..."
 pip -q install "pyannote.audio>=4.0,<5.0" "speechbrain>=1.0.0"
