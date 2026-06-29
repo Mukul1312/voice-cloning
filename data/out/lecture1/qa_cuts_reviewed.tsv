@@ -1,0 +1,37 @@
+idx	cer_gate	align_min	cer_core	note
+1	caught	-29.437	0.9032	Audio mismatched: "So, this is the" at start in text not spoken; "One who is intelligent, really intelligent" at end spoken but not in text.
+5	caught	-47.319	1.25	Sanskrit "ato griha-kshetra-sutapta-vittair" in transcript but missing in audio (leading words absent).
+11	caught	-18.669	2.2308	"durja- grha-khalo yadustajya" not spoken; first spoken word is "yadustajya".
+15	caught	-43.125	0.9333	"pumsah" starts 1.026; "stated" before it missing in audio; trailing "When" at 11.272 not in transcript. Double-ended drift.
+16	caught	-15.988	0.8909	"When male and female," not spoken; audio starts 0.863 "related"; "First thing is required is griha" at 3.707 not in transcript.
+30	caught	-9.362	0.8776	"he gives up this maya-moha" missing in audio; GGS lamenting line at 1.828 after silence.
+35	caught	-27.715	0.875	"as parantapa." in text missed in audio; 2.293-2.933 little speech but MEL active; later English not in text.
+36	caught	-27.167	3	Many words at start of sanskrit verse spoken, not in text.
+48	caught	-27.826	0.9074	Start "give instructions, tattva upadesha" in text not in audio; first spoken "Give" at 0.863; end "I become your disciple" not in text.
+49	caught	-23.402	0.9524	Spoken audio fully misaligned with text.
+51	caught	-19.628	7.75	Audio completely different: "karisye vacanam tava. Oh Acyuta, Oh Krsna".
+58	caught	-25.9	0.8621	0-1.310 flat waveform, MEL active; "purnatma nivedana. I have done" missing in text.
+66	caught	-14.851	1.2353	Bengali verse not matched; only "prema bandha" matched.
+70	caught	-13.591	0.8696	Audio mismatch except "forces, guru says".
+79	caught	-22.238	1.9655	Audio completely different; spoken verse in bengali.
+80	caught	-19.919	1.4242	Audio completely different from text.
+81	caught	-15.586	1.9048	Background other devotees; GGS singing bengali song.
+85	caught	-22.381	0.9167	GGS plus background other voice.
+93	caught	-22.202	0.9016	Audio "annihilated, reactions - then again commit more papa, then again".
+98	caught	-27.538	1.2059	"in stage of" matches (very fast); after 3.263 "Krsna-prema. Namabhasa..." missing in text.
+99	caught	-12.353	1.6923	Other devotee voice; GGS singing bengali song.
+100	caught	-9.707	11	Other devotees; GGS singing bengali song.
+101	caught	-18.007	1.2941	"many/good/results" match; at 3.500 "are there" not in transcript.
+109	caught	-29.772	1.075	"bad results / You understand / arista"; after 6.189 bengali recited verse.
+115	caught	-14.93	1.1667	Clipping imperfect: "Ajamila" half cut; leading "was dragged to" missed; end "Free from the clutches" not in text.
+117	caught	-12.069	2.4545	Bengali verse not in transcript (spoke fast, unclear).
+118	caught	-26.38	0.9655	Sanskrit+english spoken but not in text.
+123	caught	-14.721	0.8696	Only "ratri-cela" matches; rest of transcript not present; MEL active, little spoken; "Hn" filler habit.
+125	caught	-30.552	1	Transcript fully mismatched; audio "Kama-bija tara-upasana - Kaviraja Goswami".
+124	MISSED	-91.633	0.7736	FALSE NEGATIVE. Transcript "all these are going" missing; GGS first word "Vaishnava" at 2.934, before that silence. Worst align_min in lecture.
+94	MISSED	-33.806	0.8478	FALSE NEGATIVE. Entire transcript "then again commit more papa, then again Ill chant, then annihilated" not spoken by GGS.
+52	MISSED	-30.233	0.8462	FALSE NEGATIVE. Leading "Oh Acyuta, Oh Krishna," not matching; 0-0.564 "Hn" filler; at 0.564 says "tvat".
+116	MISSED	-27.632	0.7875	FALSE NEGATIVE. Leading "free from the clutches of Yamaduta" not in audio; GGS bengali till 5.579; first matching word "all" at 5.579.
+126	MISSED	-27.22	0.7848	FALSE NEGATIVE (double-ended). Leading "Kaviraja Goswami says that in CC." not in audio; only "Vaishnava-gayatri is different, gayatri is Kama-gayatri" matches (2.459-5.046s); 5.166-6.615s GGS spoke Bengali not in transcript. Only ~2.6s of the clip matches its text.
+4	MISSED	-27.006	0	FALSE NEGATIVE + CER BLINDSPOT. GGS did not speak "pumsah striya mithuni-bhavam etam"; cer_core=0 because the pure-Sanskrit clip has an empty English backbone, hiding the mismatch.
+127	MISSED	-22.767	0.8148	FALSE NEGATIVE. Only 5.280-6.179 ("Brahma-samhita says") matches; before/after GGS recited sanskrit verse not in transcript.

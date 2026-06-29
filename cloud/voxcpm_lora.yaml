@@ -1,0 +1,36 @@
+# VoxCPM2 LoRA fine-tune — GGS English voice clone (lecture 1, 140 clips)
+# Recipe: https://voxcpm.readthedocs.io/en/latest/finetuning/finetune.html  (primary source)
+pretrained_path: /workspace/VoxCPM2
+train_manifest: /workspace/voice-cloning/data/out/lecture1/final/train.voxcpm.jsonl
+val_manifest:                      # empty -> skip validation (only 140 clips; we evaluate by inference)
+
+sample_rate: 16000                 # VoxCPM2 AudioVAE encoder input rate (clips already 16k)
+out_sample_rate: 48000             # decoder output rate (inference only)
+batch_size: 16
+grad_accum_steps: 1
+num_workers: 2
+num_iters: 500
+log_interval: 10
+valid_interval: 100
+save_interval: 50                  # SAVE OFTEN: small data overfits fast — we pick the best checkpoint by ear
+
+learning_rate: 0.0001
+weight_decay: 0.01
+warmup_steps: 40
+max_steps: 500
+max_batch_tokens: 8192             # VRAM control; drop to 4096 if OOM on the 24GB 4090
+
+save_path: /workspace/ckpt/lora
+tensorboard: /workspace/logs/lora
+
+lambdas:
+  loss/diff: 1.0
+  loss/stop: 1.0
+
+lora:
+  enable_lm: true
+  enable_dit: true                 # essential for voice quality
+  enable_proj: false
+  r: 32                            # speaker cloning (doc default); bump to 48-64 if undertrained
+  alpha: 32
+  dropout: 0.0

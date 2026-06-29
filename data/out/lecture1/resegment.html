@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Re-segment — lecture1</title>
+<script src="./vendor/wavesurfer.min.js"></script>
+<script src="./vendor/plugins/regions.min.js"></script>
+<style>
+  :root{ --bg:#0d1117; --panel:#161b22; --line:#222c38; --fg:#e6edf3; --mut:#8b949e;
+         --keep:#2ea043; --cut:#e5534b; --acc:#5cc8ff; --warn:#d29922; }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--fg);
+    font:14px/1.5 ui-sans-serif,system-ui,Segoe UI,Roboto,sans-serif;}
+  #filebanner{display:none;background:#7d1a16;color:#fff;padding:8px 16px;font-weight:600}
+  #filebanner code{background:#0006;padding:1px 6px;border-radius:4px}
+  header{display:flex;align-items:center;gap:14px;padding:9px 16px;background:var(--panel);
+    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:6;flex-wrap:wrap}
+  header b{font-size:15px}.sp{flex:1}
+  #status{color:var(--mut);font-size:12.5px}
+  button,select{background:#21262d;color:var(--fg);border:1px solid var(--line);border-radius:6px;
+    padding:5px 10px;font:inherit;cursor:pointer}button:hover{border-color:#3d4756}
+  .big{font-size:15px;padding:8px 16px;font-weight:600}
+  .big.keep{border-color:var(--keep)}.big.keep:hover{background:rgba(46,160,67,.15)}
+  .big.cut{border-color:var(--cut)}.big.cut:hover{background:rgba(229,83,75,.15)}
+  .wrap{display:grid;grid-template-columns:240px 1fr;height:calc(100vh - 50px)}
+  .strip{overflow-y:auto;border-right:1px solid var(--line);background:#0b0f14}
+  .row{display:flex;align-items:center;gap:7px;padding:5px 10px;border-left:3px solid transparent;
+    cursor:pointer;font-size:12px;color:var(--mut);white-space:nowrap}
+  .row:hover{background:#11161d}.row.cur{background:#161d27;color:var(--fg);border-left-color:var(--acc)}
+  .row .dot{width:8px;height:8px;border-radius:99px;flex:none;background:#666}
+  .row.keep .dot{background:var(--keep)}.row.cut .dot{background:var(--cut)}
+  .row .tx{color:#8b949e}.row.has .tx{color:#56d364}
+  .main{overflow-y:auto;padding:14px 18px}
+  #wave{background:#0d1117;border:1px solid var(--line);border-radius:8px;padding:6px;min-height:150px}
+  .bar{display:flex;align-items:center;gap:12px;margin:8px 0;color:var(--mut);font-size:13px;flex-wrap:wrap}
+  .bar input[type=range]{width:200px}
+  #seginfo{font:13px ui-monospace,monospace;color:var(--fg)}
+  textarea{width:100%;background:var(--panel);color:var(--fg);border:1px solid var(--line);
+    border-radius:6px;padding:9px;font:15px/1.5 inherit;resize:vertical}
+  #segtext{min-height:70px;border-color:#2b5a86}
+  .acts{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:10px 0}
+  kbd{background:#21262d;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;
+    padding:0 5px;font:12px ui-monospace,monospace}
+  details{margin-top:14px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+  summary{padding:8px 12px;cursor:pointer;color:var(--acc)}
+  #tref{white-space:pre-wrap;font:13px/1.6 ui-monospace,monospace;color:#c9d1d9;padding:0 14px 14px;
+    max-height:320px;overflow:auto}
+  .legend{margin-top:12px;color:var(--mut);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 14px}
+  .hint{color:var(--warn)}
+</style>
+</head>
+<body>
+<div id="filebanner">⚠ Opened as a local file — the audio won't decode. Run
+  <code>python -m http.server 8000 --directory .</code> here, then open
+  <code>http://localhost:8000/resegment.html</code> in Chrome/Edge.</div>
+<header>
+  <b>Re-segment · lecture1</b>
+  <span id="status">loading…</span>
+  <span class="sp"></span>
+  <label style="color:var(--mut)">zoom <input id="zoom" type="range" min="3" max="120" value="8"></label>
+  <span id="tnow" style="font:13px ui-monospace,monospace">0.00s</span>
+  <button id="export" class="big">Export ▾</button>
+</header>
+
+<div class="wrap">
+  <div class="strip" id="strip"></div>
+  <div class="main">
+    <div id="wave"></div>
+    <div class="bar">
+      <button onclick="playActive()">▶ Play segment <kbd>Space</kbd></button>
+      <button onclick="ws&&ws.pause()">Pause</button>
+      <span id="seginfo">— select a segment —</span>
+      <span class="sp"></span>
+      <span class="hint">drag a region edge to retrim · drag on empty waveform = new segment</span>
+    </div>
+    <textarea id="segtext" placeholder="Type what GGS actually says in THIS segment (correct the transcript to match the audio). Press N to focus."></textarea>
+    <div class="acts">
+      <button class="big keep" onclick="decide('keep')">Keep <kbd>K</kbd></button>
+      <button class="big cut" onclick="decide('cut')">Cut <kbd>X</kbd></button>
+      <button onclick="step(-1)">‹ Prev <kbd>←</kbd></button>
+      <button onclick="step(1)">Next › <kbd>→</kbd></button>
+      <button onclick="delActive()">Delete segment <kbd>Del</kbd></button>
+    </div>
+    <details open>
+      <summary>Transcript (reference — for spelling of Sanskrit terms; Ctrl-F to find)</summary>
+      <div id="tref">loading…</div>
+    </details>
+    <div class="legend">
+      <span><kbd>Space</kbd> play</span><span><kbd>K</kbd> keep</span><span><kbd>X</kbd> cut</span>
+      <span><kbd>←</kbd>/<kbd>→</kbd> prev/next</span><span><kbd>N</kbd> edit text</span>
+      <span><kbd>+</kbd>/<kbd>-</kbd> zoom</span><span><kbd>E</kbd> export</span>
+      <span style="color:var(--mut)">green=has text · grey=untyped · red=cut. Decisions persist in this browser.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+const LSKEY="reseg-lecture1";
+let SEG=[], activeId=null, ws=null, wsr=null, zoom=8, ready=false;
+const $=s=>document.querySelector(s);
+const fix=(x)=>Math.round(x*1000)/1000;
+
+async function boot(){
+  if(location.protocol==="file:") $("#filebanner").style.display="block";
+  const saved=localStorage.getItem(LSKEY);
+  if(saved){ try{ SEG=JSON.parse(saved); }catch(e){ SEG=[]; } }
+  if(!SEG.length){
+    try{
+      const prop=await (await fetch("./resegment_proposed.json")).json();
+      SEG=prop.map(s=>({id:"s"+s.id,start:s.start,end:s.end,text:"",decision:"keep"}));
+    }catch(e){ $("#status").textContent="ERROR loading resegment_proposed.json: "+e; return; }
+  }
+  try{ $("#tref").textContent=await (await fetch("./transcript_ref.txt")).text(); }
+  catch(e){ $("#tref").textContent="(transcript_ref.txt not found)"; }
+  initWS();
+}
+function persist(){ localStorage.setItem(LSKEY,JSON.stringify(SEG)); renderProg(); }
+function sorted(){ return SEG.slice().sort((a,b)=>a.start-b.start); }
+function colorFor(s){ return s.decision==="cut"?"rgba(229,83,75,.20)":(s.text&&s.text.trim()?"rgba(46,160,67,.22)":"rgba(140,140,140,.13)"); }
+
+function initWS(){
+  $("#status").textContent="decoding audio (74MB, ~10-30s)…";
+  ws=WaveSurfer.create({container:"#wave",height:150,waveColor:"#3b6e8f",progressColor:"#5cc8ff",
+    cursorColor:"#fff",cursorWidth:2,minPxPerSec:zoom,autoScroll:true,autoCenter:true,url:"./lecture_full.wav"});
+  wsr=ws.registerPlugin(WaveSurfer.Regions.create());
+  ws.on("decode",()=>{
+    SEG.forEach(addRegion);
+    wsr.enableDragSelection({color:"rgba(92,200,255,.15)"});
+    ready=true; renderList(); renderProg();
+    $("#status").textContent=SEG.length+" segments · "+(ws.getDuration()/60).toFixed(1)+" min";
+    if(SEG.length) activate(sorted()[0].id);
+  });
+  ws.on("timeupdate",t=>{ $("#tnow").textContent=t.toFixed(2)+"s"; });
+  ws.on("error",e=>{ $("#status").textContent="AUDIO ERROR: "+e; });
+  wsr.on("region-updated",r=>{ const s=SEG.find(x=>x.id===r.id); if(s){ s.start=fix(r.start); s.end=fix(r.end); persist(); renderList(); if(r.id===activeId) showInfo(s); } });
+  wsr.on("region-created",r=>{ if(!SEG.find(x=>x.id===r.id)){ SEG.push({id:r.id,start:fix(r.start),end:fix(r.end),text:"",decision:"keep"}); persist(); renderList(); activate(r.id); } });
+  wsr.on("region-clicked",(r,e)=>{ e.stopPropagation(); activate(r.id); r.play(); });
+}
+function addRegion(s){ wsr.addRegion({id:s.id,start:s.start,end:s.end,content:String(s.id).replace("s",""),color:colorFor(s),drag:true,resize:true}); }
+function regionOf(id){ return wsr.getRegions().find(r=>r.id===id); }
+function recolor(id){ const s=SEG.find(x=>x.id===id), r=regionOf(id); if(s&&r&&r.setOptions) r.setOptions({color:colorFor(s)}); }
+
+function showInfo(s){ $("#seginfo").textContent=`#${String(s.id).replace("s","")} · ${s.start.toFixed(2)}–${s.end.toFixed(2)}s (${(s.end-s.start).toFixed(1)}s) · ${s.decision}`; }
+function activate(id){ const s=SEG.find(x=>x.id===id); if(!s)return; activeId=id;
+  $("#segtext").value=s.text||""; showInfo(s);
+  if(ready){ try{ ws.setTime(s.start); }catch(e){} }
+  renderList();
+}
+function playActive(){ const r=regionOf(activeId); const s=SEG.find(x=>x.id===activeId);
+  if(r&&r.play) r.play(); else if(s) ws.play(s.start,s.end); }
+function decide(d){ const s=SEG.find(x=>x.id===activeId); if(!s)return; s.decision=d; persist(); recolor(s.id); renderList(); step(1); }
+function delActive(){ const r=regionOf(activeId); if(r&&r.remove) r.remove(); SEG=SEG.filter(x=>x.id!==activeId); persist(); renderList(); const o=sorted(); if(o.length) activate(o[0].id); }
+function step(dir){ const o=sorted(); const i=o.findIndex(x=>x.id===activeId); const n=Math.max(0,Math.min(o.length-1,(i<0?0:i)+dir)); if(o[n]) activate(o[n].id); }
+
+function renderList(){ const el=$("#strip"); el.innerHTML=""; sorted().forEach(s=>{
+  const r=document.createElement("div");
+  r.className="row "+s.decision+(s.id===activeId?" cur":"")+((s.text&&s.text.trim())?" has":"");
+  r.innerHTML=`<span class="dot"></span>#${String(s.id).replace("s","")} <span class="tx">${s.start.toFixed(0)}s·${(s.end-s.start).toFixed(0)}s</span>`;
+  r.onclick=()=>{ activate(s.id); const rr=regionOf(s.id); if(rr&&rr.play) rr.play(); };
+  el.appendChild(r);
+  if(s.id===activeId) r.scrollIntoView({block:"nearest"});
+}); }
+function renderProg(){ const typed=SEG.filter(s=>s.text&&s.text.trim()).length, cut=SEG.filter(s=>s.decision==="cut").length;
+  $("#status").textContent=`${SEG.length} segments · typed ${typed} · cut ${cut}`; }
+
+$("#segtext").addEventListener("input",e=>{ const s=SEG.find(x=>x.id===activeId); if(s){ s.text=e.target.value; localStorage.setItem(LSKEY,JSON.stringify(SEG)); } });
+$("#segtext").addEventListener("change",()=>{ persist(); recolor(activeId); renderList(); });
+$("#zoom").addEventListener("input",e=>{ zoom=+e.target.value; if(ws){ try{ ws.zoom(zoom); }catch(_){}} });
+
+function setZoom(z){ zoom=Math.max(3,Math.min(120,z)); $("#zoom").value=zoom; if(ws){ try{ ws.zoom(zoom);}catch(_){}} }
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="TEXTAREA"){ if(e.key==="Escape")e.target.blur(); return; }
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  switch(e.key){
+    case " ": e.preventDefault(); playActive(); break;
+    case "k": case "K": decide("keep"); break;
+    case "x": case "X": decide("cut"); break;
+    case "ArrowRight": e.preventDefault(); step(1); break;
+    case "ArrowLeft": e.preventDefault(); step(-1); break;
+    case "n": case "N": e.preventDefault(); $("#segtext").focus(); break;
+    case "Delete": delActive(); break;
+    case "+": case "=": setZoom(zoom+8); break;
+    case "-": case "_": setZoom(zoom-8); break;
+    case "e": case "E": doExport(); break;
+  }
+});
+function doExport(){
+  const data=sorted().map((s,i)=>({clip:i+1,start:fix(s.start),end:fix(s.end),dur:fix(s.end-s.start),decision:s.decision,text:(s.text||"").trim()}));
+  const blob=new Blob([JSON.stringify(data,null,1)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="resegment_export.json"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const keeps=data.filter(d=>d.decision!=="cut"), typed=data.filter(d=>d.text).length;
+  alert(`Exported resegment_export.json\n\nsegments ${data.length}\nkeeps ${keeps.length}\ntyped ${typed}`);
+}
+$("#export").onclick=doExport;
+boot();
+</script>
+</body>
+</html>
