@@ -9,6 +9,7 @@
 # =====================================================================================
 set -e
 cd /workspace
+CONFIG="${1:-/workspace/voice-cloning/cloud/voxcpm_lora.yaml}"   # pass voxcpm_lora_dn.yaml for the denoised retrain
 
 echo "=== 1) fresh training venv (torch 2.5+, separate from dataprep) ==="
 python3.11 -m venv venv_train 2>/dev/null || python3 -m venv venv_train
@@ -64,6 +65,6 @@ echo "=== 6) train (LoRA r=32; checkpoints -> /workspace/ckpt/lora every 50 step
 mkdir -p /workspace/ckpt/lora /workspace/logs/lora
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # reduce fragmentation on the 24GB 4090
 python VoxCPM/scripts/train_voxcpm_finetune.py \
-    --config_path /workspace/voice-cloning/cloud/voxcpm_lora.yaml
+    --config_path "$CONFIG"
 
 echo "=== done. evaluate checkpoints with cloud/TRAINING.md step 5 ==="
