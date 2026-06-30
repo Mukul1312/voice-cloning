@@ -11,6 +11,13 @@ __pycache__/
 models/
 pretrained_models/
 
+# Trained LoRA checkpoints (70MB each) + eval samples — kept locally, not in git
+cloud/lora_ckpts/
+data/out/lecture1/samples/
+
+# Generated, servable web tools (HTML + wav/png assets) — reproducible from scripts/
+voice_lab/
+
 # OS / editor cruft
 .DS_Store
 

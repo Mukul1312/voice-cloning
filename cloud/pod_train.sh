@@ -23,8 +23,33 @@ echo "=== 3) VoxCPM + training deps ==="
 pip install -q -e VoxCPM || pip install -q -r VoxCPM/requirements.txt
 pip install -q tensorboardX argbind transformers librosa safetensors "huggingface_hub[cli]"
 
+# memfix: VoxCPM2.from_local() casts the 2B base to bf16 ONLY in inference mode; in training
+# mode it stays fp32 and OOMs a 24GB GPU (autocast keeps both fp32 master + bf16 copies).
+# Inject a bf16 cast of the FROZEN base weights (keep trainable LoRA + audio_vae in fp32).
+python - <<'PYFIX'
+p = "VoxCPM/scripts/train_voxcpm_finetune.py"
+s = open(p).read()
+anchor = "    tokenizer = base_model.text_tokenizer\n"
+if "[memfix]" in s:
+    print("memfix: already patched")
+else:
+    assert anchor in s, "memfix anchor not found — VoxCPM trainer layout changed"
+    inject = anchor + (
+        "    import torch as _t\n"
+        "    _nb = 0\n"
+        "    for _n, _p in base_model.named_parameters():\n"
+        "        if _p.requires_grad or (\"audio_vae\" in _n):\n"
+        "            continue\n"
+        "        _p.data = _p.data.to(_t.bfloat16); _nb += 1\n"
+        "    print(f\"[memfix] cast {_nb} frozen base tensors to bf16\", file=sys.stderr)\n"
+    )
+    open(p, "w").write(s.replace(anchor, inject, 1))
+    print("memfix: patched")
+PYFIX
+
 echo "=== 4) base model openbmb/VoxCPM2 (~several GB; set HF_TOKEN if it 403s) ==="
-huggingface-cli download openbmb/VoxCPM2 --local-dir /workspace/VoxCPM2
+# huggingface-cli is fully deprecated in huggingface-hub >=1.x — use `hf download`.
+hf download openbmb/VoxCPM2 --local-dir /workspace/VoxCPM2
 
 echo "=== 5) sanity: torch CUDA + data present ==="
 python - <<'PY'
@@ -37,6 +62,7 @@ PY
 
 echo "=== 6) train (LoRA r=32; checkpoints -> /workspace/ckpt/lora every 50 steps) ==="
 mkdir -p /workspace/ckpt/lora /workspace/logs/lora
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # reduce fragmentation on the 24GB 4090
 python VoxCPM/scripts/train_voxcpm_finetune.py \
     --config_path /workspace/voice-cloning/cloud/voxcpm_lora.yaml
 

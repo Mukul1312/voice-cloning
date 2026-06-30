@@ -6,8 +6,8 @@ val_manifest:                      # empty -> skip validation (only 140 clips; w
 
 sample_rate: 16000                 # VoxCPM2 AudioVAE encoder input rate (clips already 16k)
 out_sample_rate: 48000             # decoder output rate (inference only)
-batch_size: 16
-grad_accum_steps: 1
+batch_size: 2                      # reference default; fits 24GB once base is bf16 (see pod_train.sh memfix)
+grad_accum_steps: 8                # 2x8 = effective batch 16
 num_workers: 2
 num_iters: 500
 log_interval: 10
@@ -18,7 +18,7 @@ learning_rate: 0.0001
 weight_decay: 0.01
 warmup_steps: 40
 max_steps: 500
-max_batch_tokens: 8192             # VRAM control; drop to 4096 if OOM on the 24GB 4090
+max_batch_tokens: 8192             # length filter (max_sample_len = tokens//batch_size); keeps all clips
 
 save_path: /workspace/ckpt/lora
 tensorboard: /workspace/logs/lora
