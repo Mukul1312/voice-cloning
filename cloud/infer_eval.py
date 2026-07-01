@@ -13,9 +13,11 @@ from voxcpm.core import VoxCPM
 from voxcpm.model.voxcpm import LoRAConfig
 
 BASE = "/workspace/VoxCPM2"
-REF = "/workspace/voice-cloning/data/out/lecture1/final/clips/ggs_l1_0112.wav"
-REF_TEXT = ("Namabhasa means offences are not completely gone. If offences will completely go, "
-            "then pure name will rise, sun will arise, moon will rise, then prema will come")
+# PRODUCTION REFERENCE (locked 2026-07-01): denoised ggs_l1_0081 won the sweep (LoRA-150 -> 0.806,
+# ear-confirmed best; seed 42 especially good). Pre-denoised clip -> denoise=False at generate time.
+REF = "/workspace/voice-cloning/data/out/lecture1/final/clips_dn/ggs_l1_0081.wav"
+REF_TEXT = ('thats the process - and an intelligent disciple like Arjuna says, "No Guru Maharaja '
+            'whatever you say Ill do. I have no other thought." This is the proper use of independence,')
 OUT = "/workspace/out_eval"
 CKPTS = {"150": "/workspace/lora150", "250": "/workspace/lora250",
          "350": "/workspace/lora350", "500": "/workspace/lora500"}
@@ -40,7 +42,7 @@ def run(ck, lora_dir):
             out = f"{OUT}/c{ck}__{sid}__s{s}.wav"
             if os.path.exists(out):
                 continue
-            wav = m.generate(text=text, prompt_wav_path=REF, prompt_text=REF_TEXT, denoise=True, seed=s)
+            wav = m.generate(text=text, prompt_wav_path=REF, prompt_text=REF_TEXT, denoise=False, seed=s)  # ref pre-denoised
             sf.write(out, wav, sr)
             print(f"wrote {out}", file=sys.stderr)
     del m; gc.collect(); torch.cuda.empty_cache()

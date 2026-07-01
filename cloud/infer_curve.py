@@ -15,9 +15,10 @@ from voxcpm.core import VoxCPM
 from voxcpm.model.voxcpm import LoRAConfig
 
 BASE = "/workspace/VoxCPM2"
-REF = "/workspace/voice-cloning/data/out/lecture1/final/clips/ggs_l1_0112.wav"
-REF_TEXT = ("Namabhasa means offences are not completely gone. If offences will completely go, "
-            "then pure name will rise, sun will arise, moon will rise, then prema will come")
+# PRODUCTION REFERENCE (locked 2026-07-01): denoised ggs_l1_0081 (sweep winner, 0.806).
+REF = "/workspace/voice-cloning/data/out/lecture1/final/clips_dn/ggs_l1_0081.wav"
+REF_TEXT = ('thats the process - and an intelligent disciple like Arjuna says, "No Guru Maharaja '
+            'whatever you say Ill do. I have no other thought." This is the proper use of independence,')
 OUT = "/workspace/out_curve"
 SUBSETS = [35, 70, 105, 140]
 STEPS = [25, 50, 100, 200]                  # sweep -> pick each subset's best checkpoint locally
@@ -45,7 +46,7 @@ def run(N, step):
                                lora_config=cfg, lora_weights_path=lora_dir)
     sr = m.tts_model.sample_rate
     for sid, s in pending:
-        wav = m.generate(text=SENTS[sid], prompt_wav_path=REF, prompt_text=REF_TEXT, denoise=True, seed=s)
+        wav = m.generate(text=SENTS[sid], prompt_wav_path=REF, prompt_text=REF_TEXT, denoise=False, seed=s)  # ref pre-denoised
         sf.write(f"{OUT}/n{N}_k{step}__{sid}__s{s}.wav", wav, sr)
         print(f"wrote n{N}_k{step}__{sid}__s{s}.wav", file=sys.stderr)
     del m; gc.collect(); torch.cuda.empty_cache()
