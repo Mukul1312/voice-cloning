@@ -76,8 +76,8 @@ for p in sorted(SWEEP.glob("*.wav")):
     agg[(m["rid"], m["model"])].append(cos(embed(p), ref))
 
 REF_LABEL = {"c0112n": "0112 noisy+dn (BASELINE)", "c0112d": "0112 denoised",
-             "c0086d": "0086 calm-modal", "c0081d": "0081 typical/shout"}
-RIDS = ["c0112n", "c0112d", "c0086d", "c0081d"]
+             "c0086d": "0086 calm-modal", "c0081d": "0081 typical/shout", "c0081n": "0081 noisy"}
+RIDS = ["c0112n", "c0112d", "c0086d", "c0081d", "c0081n"]
 MODELS = ["base", "lora150"]
 
 
@@ -106,6 +106,9 @@ for mdl in MODELS:
     c, d = mean_of("c0086d", mdl), mean_of("c0081d", mdl)
     if c and d:
         print(f"  calm vs shout   ({mdl:7}): 0086-calm {c:.3f}  vs  0081-shout {d:.3f}  ({c-d:+.3f})")
+    e, g = mean_of("c0081n", mdl), mean_of("c0081d", mdl)
+    if e and g:
+        print(f"  0081 noisy vs dn ({mdl:7}): noisy {e:.3f}  vs  denoised {g:.3f}  ({e-g:+.3f})")
 # does the reference beat the LoRA? best-ref base vs best-ref lora
 for rid in RIDS:
     a, b = mean_of(rid, "base"), mean_of(rid, "lora150")

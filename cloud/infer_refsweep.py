@@ -43,6 +43,7 @@ REFS = [
     ("c0112d", f"{CLIPS_DN}/ggs_l1_0112.wav", T0112, False),
     ("c0086d", f"{CLIPS_DN}/ggs_l1_0086.wav", T0086, False),
     ("c0081d", f"{CLIPS_DN}/ggs_l1_0081.wav", T0081, False),
+    ("c0081n", f"{CLIPS}/ggs_l1_0081.wav",    T0081, True),   # follow-up: NOISY 0081 (Q4: noisy > denoised on same clip)
 ]
 SENTS = {  # UNSEEN (same as every prior eval, for apples-to-apples)
     "nv1": "Without the mercy of guru and Krishna, no one can cross this ocean of birth and death.",
