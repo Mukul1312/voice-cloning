@@ -2,13 +2,15 @@
 build_hi_review.py — transcript-review gallery for the Hindi clip set.
 
 Reads the Whisper-draft manifests (data/hi/lectures/<slug>/train_hi.jsonl) + their clips and emits a
-static page (voice_lab/hi_review/) where you play each clip and EDIT its Devanagari transcript, tick a
-"drop" box for junk / non-Hindi clips, then click "Download corrected" to get a merged
-train_hi_corrected.jsonl. Edits autosave to the browser (localStorage), so a long review survives reloads.
+static page (voice_lab/hi_review/) where you:
+  - play each clip and EDIT its Devanagari transcript,
+  - tick "drop" for junk / non-Hindi clips,
+  - tick "⭐ref" to mark a clip as a probe reference,
+then Download corrected JSONL (train_hi_corrected.jsonl) and/or Download probe refs (probe_refs.jsonl,
+= the starred clips with their corrected text). Edits autosave (localStorage), so a long review survives
+reloads and rebuilds (same clip ids -> same keys).
 
-Runs LOCALLY, after pulling the pod's clips_hi + train_hi.jsonl (see the runbook). Serve with:
-  python -m http.server 8000 --directory voice_lab   ->   http://localhost:8000/hi_review/
-
+Serve with:  python -m http.server 8000 --directory voice_lab   ->   http://localhost:8000/hi_review/
   python scripts/build_hi_review.py
 """
 import json
@@ -29,7 +31,7 @@ HTML = r"""<!doctype html><html lang="hi"><head><meta charset="utf-8">
  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
    font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
  .bar{position:sticky;top:0;background:#0d0b0a;border-bottom:1px solid var(--line);padding:10px 16px;
-   display:flex;gap:16px;align-items:center;flex-wrap:wrap;z-index:5}
+   display:flex;gap:12px;align-items:center;flex-wrap:wrap;z-index:5}
  .bar b{color:var(--gold)} .bar .sp{flex:1}
  button{cursor:pointer;border:1px solid var(--line);background:#241f1c;color:var(--ink);
    border-radius:8px;padding:8px 14px;font-size:14px}
@@ -39,14 +41,16 @@ HTML = r"""<!doctype html><html lang="hi"><head><meta charset="utf-8">
  .row{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);
    border-radius:10px;padding:10px 12px;margin:0 0 10px}
  .row.drop{opacity:.45;border-color:var(--drop)}
+ .row.isref{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
  .n{flex:0 0 42px;color:var(--mut);font-size:12px;padding-top:6px}
  .mid{flex:1;min-width:0}
  audio{width:100%;height:34px;margin:0 0 6px}
  textarea{width:100%;min-height:46px;background:#15120f;color:var(--ink);border:1px solid var(--line);
    border-radius:6px;padding:8px;font:16px/1.5 'Noto Sans Devanagari',system-ui,serif;resize:vertical}
  .meta{color:var(--mut);font-size:11px;margin-top:4px}
- .rt{flex:0 0 74px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;padding-top:4px}
+ .rt{flex:0 0 78px;display:flex;flex-direction:column;gap:6px;align-items:flex-end;padding-top:4px}
  .rt label{font-size:12px;color:var(--drop);display:flex;gap:5px;align-items:center;cursor:pointer}
+ .rt label.rf{color:var(--gold)}
  .done textarea{border-color:#4a7a4a}
 </style></head><body>
 <div class="bar">
@@ -54,6 +58,7 @@ HTML = r"""<!doctype html><html lang="hi"><head><meta charset="utf-8">
  <span id="stat"></span>
  <span class="sp"></span>
  <button onclick="resetAll()">clear saved edits</button>
+ <button onclick="downloadRefs()">⭐ Download probe refs</button>
  <button class="dl" onclick="download_()">⬇ Download corrected JSONL</button>
 </div>
 <div class="wrap" id="app"></div>
@@ -66,10 +71,11 @@ try{ saved = JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){}
 function persist(){ localStorage.setItem(KEY, JSON.stringify(saved)); stat(); }
 function stat(){
   const n=D.length, ed=Object.values(saved).filter(s=>s&&s.text!==undefined).length,
-        dr=Object.values(saved).filter(s=>s&&s.drop).length;
-  document.getElementById("stat").textContent = `${n} clips · ${ed} edited · ${dr} dropped`;
+        dr=Object.values(saved).filter(s=>s&&s.drop).length,
+        rf=Object.values(saved).filter(s=>s&&s.ref).length;
+  document.getElementById("stat").textContent = `${n} clips · ${ed} edited · ${dr} dropped · ${rf} ⭐ref`;
 }
-function resetAll(){ if(confirm("Clear all saved edits/drops?")){ saved={}; persist(); render(); } }
+function resetAll(){ if(confirm("Clear all saved edits/drops/refs?")){ saved={}; persist(); render(); } }
 
 function render(){
   const app=document.getElementById("app"); app.innerHTML="";
@@ -77,7 +83,8 @@ function render(){
   D.forEach((x,i)=>{
     if(x.lecture!==cur){ cur=x.lecture; const h=document.createElement("h2"); h.textContent=cur; app.appendChild(h); }
     const s = saved[x.id] || {};
-    const row=document.createElement("div"); row.className="row"+(s.drop?" drop":"")+(s.text!==undefined?" done":"");
+    const row=document.createElement("div");
+    row.className="row"+(s.drop?" drop":"")+(s.ref?" isref":"")+(s.text!==undefined?" done":"");
     row.innerHTML =
       `<div class="n">#${i+1}</div>
        <div class="mid">
@@ -85,25 +92,34 @@ function render(){
          <textarea spellcheck="false">${(s.text!==undefined?s.text:x.text)||""}</textarea>
          <div class="meta">${x.id} · ${x.dur}s · @${x.start}s</div>
        </div>
-       <div class="rt"><label><input type="checkbox" ${s.drop?"checked":""}> drop</label></div>`;
-    const ta=row.querySelector("textarea"), cb=row.querySelector("input");
+       <div class="rt">
+         <label class="rf"><input type="checkbox" class="refcb" ${s.ref?"checked":""}> ⭐ref</label>
+         <label><input type="checkbox" class="dropcb" ${s.drop?"checked":""}> drop</label>
+       </div>`;
+    const ta=row.querySelector("textarea"),
+          dcb=row.querySelector("input.dropcb"), rcb=row.querySelector("input.refcb");
     ta.oninput=()=>{ saved[x.id]={...(saved[x.id]||{}),text:ta.value}; row.classList.add("done"); persist(); };
-    cb.onchange=()=>{ saved[x.id]={...(saved[x.id]||{}),drop:cb.checked}; row.classList.toggle("drop",cb.checked); persist(); };
+    dcb.onchange=()=>{ saved[x.id]={...(saved[x.id]||{}),drop:dcb.checked}; row.classList.toggle("drop",dcb.checked); persist(); };
+    rcb.onchange=()=>{ saved[x.id]={...(saved[x.id]||{}),ref:rcb.checked}; row.classList.toggle("isref",rcb.checked); persist(); };
     app.appendChild(row);
   });
   stat();
 }
-function download_(){
-  const lines=[];
-  for(const x of D){
-    const s=saved[x.id]||{};
-    if(s.drop) continue;
-    const o={...x.orig, text:(s.text!==undefined?s.text:x.text)};
-    lines.push(JSON.stringify(o));
-  }
+function _lines(pred){
+  const out=[];
+  for(const x of D){ const s=saved[x.id]||{}; if(!pred(s)) continue;
+    out.push(JSON.stringify({...x.orig, text:(s.text!==undefined?s.text:x.text)})); }
+  return out;
+}
+function _save(lines, name){
   const blob=new Blob([lines.join("\n")+"\n"],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-  a.download="train_hi_corrected.jsonl"; a.click();
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click();
+}
+function download_(){ _save(_lines(s=>!s.drop), "train_hi_corrected.jsonl"); }
+function downloadRefs(){
+  const lines=_lines(s=>s.ref);
+  if(!lines.length){ alert("No clips starred ⭐ref yet — tick a few clean ones for the probe."); return; }
+  _save(lines, "probe_refs.jsonl");
 }
 render();
 </script></body></html>"""
